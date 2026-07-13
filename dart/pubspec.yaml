@@ -1,0 +1,14 @@
+# See: https://dart.dev/tools/pub/pubspec
+---
+name: readmer
+version: 0.0.0
+description: >-
+  Compose README.md files from templates.
+homepage: https://readmer.dev
+repository: https://github.com/artob/readmer
+issue_tracker: https://github.com/artob/readmer/issues
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0
+environment:
+  sdk: ^3.11.0
