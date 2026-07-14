@@ -9,6 +9,13 @@
 
 **Readmer composes `README.md` files from templates.**
 
+## ✨ Features
+
+- Available both as the command-line tool [`readmer`] and as a polyglot library.
+- Compose `README.md` files from Liquid templates in `.config/readmer/`.
+- Polyglot software available for Dart, Python, Ruby, Rust, and TypeScript.
+- Cuts red tape: 100% free and unencumbered public domain software.
+
 ## ⬇️ Installation
 
 ### Installation from [Crates.io]
@@ -68,3 +75,5 @@ git clone https://github.com/artob/readmer.git
 [Pub.dev]: https://pub.dev/packages/readmer
 [PyPI]: https://pypi.org/project/readmer
 [RubyGems]: https://rubygems.org/gems/readmer
+
+[`readmer`]: https://github.com/artob/readmer/tree/master/rust#command-line-interface
