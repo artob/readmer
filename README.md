@@ -7,12 +7,12 @@
 [![Package on PyPI](https://img.shields.io/pypi/v/readmer)](https://pypi.org/project/readmer)
 [![Package on RubyGems](https://img.shields.io/gem/v/readmer)](https://rubygems.org/gems/readmer)
 
-**Readmer composes `README.md` files from templates.**
+**Readmer composes `README.md` files from Jinja2 or Liquid templates.**
 
 ## ✨ Features
 
-- Available both as the command-line tool [`readmer`] and as a polyglot library.
-- Compose `README.md` files from Liquid templates in `.config/readmer/`.
+- Available both as the command-line tool [`readmer`] and a polyglot library.
+- Compose `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
 - Polyglot software available for Dart, Python, Ruby, Rust, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 

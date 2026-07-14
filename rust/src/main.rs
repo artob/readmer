@@ -5,11 +5,13 @@
 use clientele::{
     StandardOptions,
     SysexitsError::{self, *},
+    crates::camino::Utf8PathBuf,
     crates::clap::{Parser, Subcommand},
 };
+use readmer::Workspace;
 use std::path::PathBuf;
 
-/// Readmer composes README.md files from templates.
+/// Readmer composes README.md files from Jinja2 or Liquid templates.
 #[derive(Debug, Parser)]
 #[command(name = "Readmer", long_about)]
 #[command(arg_required_else_help = true)]
@@ -24,17 +26,19 @@ struct Options {
 #[derive(Debug, Subcommand)]
 enum Command {
     /// Build ./README.md from templates in $WORKSPACE/.config/readmer/.
+    #[cfg(feature = "unstable")]
     #[clap(aliases = ["b", "bu", "bui", "buidl"])]
     Build {
         /// The output files to build [default: ./README.md].
-        outputs: Vec<PathBuf>,
+        outputs: Vec<Utf8PathBuf>,
     },
 
     /// Describe the current project's metadata in JSON format.
+    #[cfg(feature = "unstable")]
     #[clap(aliases = ["d", "de", "des", "desc"])]
     Describe {
         /// The project directory to use [default: $PWD].
-        project: Option<PathBuf>,
+        project: Option<Utf8PathBuf>,
 
         /// The project property to output [default: all properties].
         property: Option<String>,
@@ -47,11 +51,15 @@ enum Command {
     /// Render a template file to standard output.
     #[clap(aliases = ["r", "re", "ren"])]
     Render {
-        /// The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid].
-        inputs: Vec<PathBuf>,
+        /// The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.j2].
+        inputs: Vec<Utf8PathBuf>,
+
+        /// The workspace directory to use [default: $WORKSPACE].
+        #[clap(short = 'W', long)]
+        workspace: Option<Workspace>,
 
         /// The templating engine to use.
-        #[clap(short, long, default_value = "liquid")]
+        #[clap(short, long, default_value = "minijinja")]
         engine: Option<String>,
 
         /// Define a variable and value to pass to the templating engine.
@@ -62,8 +70,11 @@ enum Command {
 
 impl Default for Command {
     fn default() -> Self {
-        Self::Build {
-            outputs: Vec::new(),
+        Self::Render {
+            inputs: Vec::new(),
+            workspace: None,
+            engine: None,
+            define: None,
         }
     }
 }
@@ -94,16 +105,57 @@ pub fn main() -> Result<(), SysexitsError> {
     if options.flags.debug {}
 
     match options.command.unwrap_or_default() {
-        Command::Build { .. } => {
+        #[cfg(feature = "unstable")]
+        Command::Build { outputs } => {
+            let _outputs = if outputs.is_empty() {
+                vec!["README.md".into()]
+            } else {
+                outputs
+            };
+
             // TODO: implement `readmer build`
+
             Ok(())
         },
-        Command::Describe { .. } => {
+
+        #[cfg(feature = "unstable")]
+        Command::Describe { project, .. } => {
+            let _project = project.unwrap_or_else(|| ".".into());
+
             // TODO: implement `readmer describe`
+
             Ok(())
         },
-        Command::Render { .. } => {
-            // TODO: implement `readmer render`
+
+        Command::Render {
+            inputs, workspace, ..
+        } => {
+            let inputs = if inputs.is_empty() {
+                vec!["README.md.j2".into()] // TODO: find the prefix from the workspace
+            } else {
+                inputs
+            };
+
+            let workspace = workspace.unwrap_or_else(|| Workspace::locate().unwrap());
+
+            for input in inputs {
+                let mut engine = readmer::MinijinjaEngine::new();
+                let template_name = input.to_string();
+                let template_path =
+                    if input.has_root() || input.starts_with(".") || input.starts_with("..") {
+                        // Qualified paths are used as-is w/o further resolution:
+                        input
+                    } else {
+                        // Unqualified paths are interpreted as template paths
+                        // relative to the workspace's Readmer configuration
+                        // directory (`$WORKSPACE/.config/readmer/`):
+                        workspace.template_path(&input)
+                    };
+                engine.load_template(&template_name, template_path).unwrap();
+                let output = engine.render(&template_name).unwrap();
+                println!("{}", output);
+            }
+
             Ok(())
         },
     }

@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-//! Readmer composes `README.md` files from templates.
+//! Readmer composes `README.md` files from Jinja2 or Liquid templates.
 
 #![no_std]
 #![forbid(unsafe_code)]
@@ -16,3 +16,13 @@ extern crate std;
 #[doc = include_str!("../README.md")]
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
+
+#[cfg(feature = "alloc")]
+mod engine;
+#[cfg(feature = "alloc")]
+pub use engine::*;
+
+#[cfg(feature = "alloc")]
+mod workspace;
+#[cfg(feature = "alloc")]
+pub use workspace::*;

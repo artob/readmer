@@ -5,7 +5,7 @@
 [![Package](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
 [![Documentation](https://img.shields.io/docsrs/readmer?label=docs.rs)](https://docs.rs/readmer)
 
-**Readmer composes `README.md` files from templates.**
+**Readmer composes `README.md` files from Jinja2 or Liquid templates.**
 
 <sub>
 
@@ -22,8 +22,8 @@
 
 ## ✨ Features
 
-- Available both as the command-line tool [`readmer`] and as a Rust library.
-- Compose README.md files from Liquid templates in `.config/readmer/`.
+- Available both as the command-line tool [`readmer`] and a Rust library.
+- Compose `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
 - 100% pure and safe Rust with minimal dependencies and no bloat.
 - Designed for `#![no_std]` environment compatibility from the get-go.
 - Supports opting out of any feature using comprehensive [feature flags].
@@ -87,7 +87,7 @@ use readmer::*;
 
 ```console
 $ readmer
-Readmer composes README.md files from templates
+Readmer composes README.md files from Jinja2 or Liquid templates
 
 Usage: readmer [OPTIONS] [COMMAND]
 
@@ -153,15 +153,16 @@ Render a template file to standard output
 Usage: readmer render [OPTIONS] [INPUTS]...
 
 Arguments:
-  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid]
+  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.j2]
 
 Options:
-      --color <COLOR>    Set the color output mode [default: auto] [possible values: auto, always, never]
-  -e, --engine <ENGINE>  The templating engine to use [default: liquid]
-  -d, --debug            Enable debugging output
-  -D, --define <DEFINE>  Define a variable and value to pass to the templating engine
-  -v, --verbose...       Enable verbose output (may be repeated for more verbosity)
-  -h, --help             Print help
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
+  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+  -d, --debug                  Enable debugging output
+  -e, --engine <ENGINE>        The templating engine to use [default: minijinja]
+  -D, --define <DEFINE>        Define a variable and value to pass to the templating engine
+  -v, --verbose...             Enable verbose output (may be repeated for more verbosity)
+  -h, --help                   Print help
 ```
 
 ## 👨‍💻 Development
