@@ -32,6 +32,7 @@ liquid = ["dep:liquid"]
 [dependencies]
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
+dyn-clone = { version = "1.0", default-features = false }
 thiserror = { version = "2", default-features = false }
 
 # Engines:

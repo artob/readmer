@@ -1,10 +1,10 @@
 // This is free and unencumbered software released into the public domain.
 
+use crate::{Engine, RenderError, Utf8Path, Utf8PathBuf};
 use alloc::{
     boxed::Box,
     string::{String, ToString},
 };
-use clientele::crates::camino::{Utf8Path, Utf8PathBuf};
 use minijinja::{Environment, Error, UndefinedBehavior};
 
 #[derive(Clone, Debug)]
@@ -23,20 +23,6 @@ impl MinijinjaEngine {
         Self(env)
     }
 
-    #[cfg(feature = "std")]
-    pub fn load_template(
-        &mut self,
-        name: impl Into<String>,
-        path: impl Into<Utf8PathBuf>,
-    ) -> Result<(), Box<dyn core::error::Error>> {
-        let name = name.into();
-        let path = path.into();
-        let env = &mut self.0;
-        let content = std::fs::read_to_string(&path)?;
-        env.add_template_owned(name, content)?;
-        Ok(())
-    }
-
     pub fn add_template(
         &mut self,
         name: impl Into<String>,
@@ -45,12 +31,32 @@ impl MinijinjaEngine {
         let env = &mut self.0;
         env.add_template_owned(name.into(), content.into())
     }
+}
 
-    pub fn render(&mut self, name: impl Into<String>) -> Result<String, Error> {
+impl Engine for MinijinjaEngine {
+    #[cfg(feature = "std")]
+    fn load_template(
+        &mut self,
+        name: &str,
+        path: &Utf8PathBuf,
+    ) -> Result<(), Box<dyn core::error::Error>> {
+        let name: String = name.into();
+        let path: Utf8PathBuf = path.clone();
+        let env = &mut self.0;
+        let content = std::fs::read_to_string(&path)?;
+        env.add_template_owned(name, content)?;
+        Ok(())
+    }
+
+    fn render(&mut self, name: &str) -> Result<String, RenderError> {
         let env = &mut self.0;
         let name: String = name.into();
-        let template = env.get_template(name.as_ref())?;
-        let result = template.render(&minijinja::context!())?; // TODO
+        let template = env
+            .get_template(name.as_ref())
+            .map_err(|e| RenderError::Other(Box::new(e)))?;
+        let result = template
+            .render(&minijinja::context!())
+            .map_err(|e| RenderError::Other(Box::new(e)))?;
         Ok(result)
     }
 }

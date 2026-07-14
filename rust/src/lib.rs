@@ -19,13 +19,16 @@ pub struct ReadmeDoctests;
 
 use clientele::crates::camino::{Utf8Path, Utf8PathBuf};
 
-mod tools;
-pub use tools::*;
-
 #[cfg(feature = "alloc")]
 mod engine;
 #[cfg(feature = "alloc")]
 pub use engine::*;
+
+mod error;
+pub use error::*;
+
+mod tools;
+pub use tools::*;
 
 #[cfg(feature = "alloc")]
 mod workspace;

@@ -1,5 +1,10 @@
 // This is free and unencumbered software released into the public domain.
 
+use crate::{Engine, RenderError};
+use alloc::{
+    boxed::Box,
+    string::{String, ToString},
+};
 use liquid::Template;
 
 #[derive(Clone, Debug)]
@@ -18,3 +23,5 @@ impl LiquidEngine {
 
     pub fn render(&self) {}
 }
+
+impl Engine for LiquidEngine {}

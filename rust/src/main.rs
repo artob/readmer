@@ -8,7 +8,7 @@ use clientele::{
     crates::camino::Utf8PathBuf,
     crates::clap::{Parser, Subcommand},
 };
-use readmer::Workspace;
+use readmer::{Engine, Workspace};
 use std::path::PathBuf;
 
 /// Readmer composes README.md files from Jinja2 or Liquid templates.
@@ -128,7 +128,10 @@ pub fn main() -> Result<(), SysexitsError> {
         },
 
         Command::Render {
-            inputs, workspace, ..
+            inputs,
+            workspace,
+            engine,
+            ..
         } => {
             let inputs = if inputs.is_empty() {
                 vec!["README.md.j2".into()] // TODO: find the prefix from the workspace
@@ -141,8 +144,15 @@ pub fn main() -> Result<(), SysexitsError> {
                 None => Workspace::locate().unwrap(),
             };
 
+            let engine: Box<dyn Engine> =
+                match engine.unwrap_or_else(|| "minijinja".to_string()).as_str() {
+                    "liquid" => Box::new(readmer::LiquidEngine::new()),
+                    "minijinja" | "jinja2" | "j2" => Box::new(readmer::MinijinjaEngine::new()),
+                    _ => todo!(),
+                };
+
             for input in inputs {
-                let mut engine = readmer::MinijinjaEngine::new();
+                let mut engine = dyn_clone::clone_box(&*engine);
                 let template_name = input.to_string();
                 let template_path =
                     if input.has_root() || input.starts_with(".") || input.starts_with("..") {
@@ -156,7 +166,9 @@ pub fn main() -> Result<(), SysexitsError> {
                             .template_path(prefix.as_ref().map(|p| p.join(&input)).unwrap_or(input))
                     };
                 //eprintln!("{}", template_path);
-                engine.load_template(&template_name, template_path).unwrap();
+                engine
+                    .load_template(&template_name, &template_path)
+                    .unwrap();
                 let output = engine.render(&template_name).unwrap();
                 println!("{}", output);
             }
