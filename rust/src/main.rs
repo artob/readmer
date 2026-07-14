@@ -136,7 +136,10 @@ pub fn main() -> Result<(), SysexitsError> {
                 inputs
             };
 
-            let workspace = workspace.unwrap_or_else(|| Workspace::locate().unwrap());
+            let (workspace, prefix) = match workspace {
+                Some(workspace) => (workspace, None),
+                None => Workspace::locate().unwrap(),
+            };
 
             for input in inputs {
                 let mut engine = readmer::MinijinjaEngine::new();
@@ -149,8 +152,10 @@ pub fn main() -> Result<(), SysexitsError> {
                         // Unqualified paths are interpreted as template paths
                         // relative to the workspace's Readmer configuration
                         // directory (`$WORKSPACE/.config/readmer/`):
-                        workspace.template_path(&input)
+                        workspace
+                            .template_path(prefix.as_ref().map(|p| p.join(&input)).unwrap_or(input))
                     };
+                //eprintln!("{}", template_path);
                 engine.load_template(&template_name, template_path).unwrap();
                 let output = engine.render(&template_name).unwrap();
                 println!("{}", output);

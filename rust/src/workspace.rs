@@ -1,7 +1,7 @@
 // This is free and unencumbered software released into the public domain.
 
+use crate::{Git, Utf8PathBuf};
 use alloc::string::String;
-use clientele::crates::camino::Utf8PathBuf;
 use core::str::FromStr;
 use std::{
     io::{Error, ErrorKind, Result},
@@ -30,17 +30,18 @@ impl FromStr for Workspace {
 }
 
 impl Workspace {
-    pub fn locate() -> Result<Self> {
-        Self::locate_from(".")
-    }
-
-    pub fn locate_from(subpath: impl Into<Utf8PathBuf>) -> Result<Self> {
-        let subpath = subpath.into();
-        if !subpath.is_dir() {
-            return Err(Error::from(ErrorKind::NotADirectory));
+    pub fn locate() -> Result<(Self, Option<Utf8PathBuf>)> {
+        let git = Git::default();
+        let prefix = git.show_prefix().unwrap(); // FIXME
+        let parent_count = prefix.components().count();
+        if parent_count == 0 {
+            return Ok((Self(".".into()), None));
         }
-        // TODO: traverse up to find the workspace root
-        Ok(Self(subpath))
+        let mut path = Utf8PathBuf::new();
+        for _ in 0..parent_count {
+            path.push("..");
+        }
+        Ok((Self(path), Some(prefix)))
     }
 
     pub fn has_template(&self, name: impl AsRef<str>) -> Result<bool> {

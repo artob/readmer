@@ -23,7 +23,7 @@
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a Rust library.
-- Compose `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
+- Build `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
 - 100% pure and safe Rust with minimal dependencies and no bloat.
 - Designed for `#![no_std]` environment compatibility from the get-go.
 - Supports opting out of any feature using comprehensive [feature flags].

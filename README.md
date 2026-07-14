@@ -12,7 +12,7 @@
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a polyglot library.
-- Compose `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
+- Build `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
 - Polyglot software available for Dart, Python, Ruby, Rust, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
