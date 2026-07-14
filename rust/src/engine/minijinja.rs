@@ -22,41 +22,23 @@ impl MinijinjaEngine {
         env.set_undefined_behavior(UndefinedBehavior::Strict);
         Self(env)
     }
-
-    pub fn add_template(
-        &mut self,
-        name: impl Into<String>,
-        content: impl Into<String>,
-    ) -> Result<(), Error> {
-        let env = &mut self.0;
-        env.add_template_owned(name.into(), content.into())
-    }
 }
 
 impl Engine for MinijinjaEngine {
-    #[cfg(feature = "std")]
-    fn load_template(
+    fn define_template(
         &mut self,
-        name: &str,
-        path: &Utf8PathBuf,
+        name: String,
+        data: String,
     ) -> Result<(), Box<dyn core::error::Error>> {
-        let name: String = name.into();
-        let path: Utf8PathBuf = path.clone();
         let env = &mut self.0;
-        let content = std::fs::read_to_string(&path)?;
-        env.add_template_owned(name, content)?;
+        env.add_template_owned(name, data)?;
         Ok(())
     }
 
-    fn render(&mut self, name: &str) -> Result<String, RenderError> {
+    fn render(&mut self, name: String) -> Result<String, RenderError> {
         let env = &mut self.0;
-        let name: String = name.into();
-        let template = env
-            .get_template(name.as_ref())
-            .map_err(|e| RenderError::Other(Box::new(e)))?;
-        let result = template
-            .render(&minijinja::context!())
-            .map_err(|e| RenderError::Other(Box::new(e)))?;
-        Ok(result)
+        let template = env.get_template(name.as_ref())?;
+        let output = template.render(&minijinja::context!())?; // TODO
+        Ok(output)
     }
 }

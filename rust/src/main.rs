@@ -9,7 +9,7 @@ use clientele::{
     crates::clap::{Parser, Subcommand},
 };
 use readmer::{Engine, Workspace};
-use std::path::PathBuf;
+use std::{default, path::PathBuf};
 
 /// Readmer composes README.md files from Jinja2 or Liquid templates.
 #[derive(Debug, Parser)]
@@ -58,8 +58,8 @@ enum Command {
         #[clap(short = 'W', long)]
         workspace: Option<Workspace>,
 
-        /// The templating engine to use.
-        #[clap(short, long, default_value = "minijinja")]
+        /// The templating engine to use [default: auto].
+        #[clap(short, long)]
         engine: Option<String>,
 
         /// Define a variable and value to pass to the templating engine.
@@ -133,26 +133,28 @@ pub fn main() -> Result<(), SysexitsError> {
             engine,
             ..
         } => {
+            let (workspace, prefix) = match workspace {
+                Some(workspace) => (workspace, None),
+                None => Workspace::locate().unwrap(),
+            };
+
             let inputs = if inputs.is_empty() {
                 vec!["README.md.j2".into()] // TODO: find the prefix from the workspace
             } else {
                 inputs
             };
 
-            let (workspace, prefix) = match workspace {
-                Some(workspace) => (workspace, None),
-                None => Workspace::locate().unwrap(),
-            };
-
-            let engine: Box<dyn Engine> =
-                match engine.unwrap_or_else(|| "minijinja".to_string()).as_str() {
+            for input in inputs {
+                let engine_name = engine
+                    .as_deref()
+                    .or_else(|| input.extension())
+                    .unwrap_or("liquid");
+                let mut engine: Box<dyn Engine> = match engine_name {
                     "liquid" => Box::new(readmer::LiquidEngine::new()),
                     "minijinja" | "jinja2" | "j2" => Box::new(readmer::MinijinjaEngine::new()),
                     _ => todo!(),
                 };
-
-            for input in inputs {
-                let mut engine = dyn_clone::clone_box(&*engine);
+                //let mut engine = dyn_clone::clone_box(&*engine);
                 let template_name = input.to_string();
                 let template_path =
                     if input.has_root() || input.starts_with(".") || input.starts_with("..") {
@@ -167,9 +169,9 @@ pub fn main() -> Result<(), SysexitsError> {
                     };
                 //eprintln!("{}", template_path);
                 engine
-                    .load_template(&template_name, &template_path)
+                    .load_template(template_name.clone(), template_path)
                     .unwrap();
-                let output = engine.render(&template_name).unwrap();
+                let output = engine.render(template_name).unwrap();
                 println!("{}", output);
             }
 

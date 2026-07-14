@@ -8,9 +8,23 @@ use thiserror::Error;
 
 #[derive(Debug, Error)]
 pub enum RenderError {
-    #[error("not found")]
+    #[error("template not found")]
     NotFound,
 
     #[error(transparent)]
     Other(#[from] Box<dyn core::error::Error>),
+}
+
+#[cfg(feature = "liquid")]
+impl From<liquid::Error> for RenderError {
+    fn from(input: liquid::Error) -> Self {
+        RenderError::Other(Box::new(input))
+    }
+}
+
+#[cfg(feature = "jinja2")]
+impl From<minijinja::Error> for RenderError {
+    fn from(input: minijinja::Error) -> Self {
+        RenderError::Other(Box::new(input))
+    }
 }

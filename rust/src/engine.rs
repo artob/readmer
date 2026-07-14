@@ -9,15 +9,25 @@ use core::error::Error;
 use dyn_clone::DynClone;
 
 pub trait Engine: DynClone {
+    #[cfg(feature = "std")]
     fn load_template(
         &mut self,
-        _name: &str,
-        _path: &Utf8PathBuf,
+        name: String,
+        path: Utf8PathBuf,
     ) -> Result<(), Box<dyn core::error::Error>> {
-        Err(RenderError::NotFound.into())
+        let content = std::fs::read_to_string(&path)?;
+        self.define_template(name, content)
     }
 
-    fn render(&mut self, _name: &str) -> Result<String, RenderError> {
+    fn define_template(
+        &mut self,
+        _name: String,
+        _data: String,
+    ) -> Result<(), Box<dyn core::error::Error>> {
+        Ok(())
+    }
+
+    fn render(&mut self, _name: String) -> Result<String, RenderError> {
         Err(RenderError::NotFound)
     }
 }
