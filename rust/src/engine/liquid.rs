@@ -42,6 +42,6 @@ impl Engine for LiquidEngine {
             .parse(template_data)?;
         let context = liquid::to_object(&context.into_json())?;
         let output = template.render(&context)?;
-        Ok(output)
+        Ok(output) // always newline-terminated
     }
 }

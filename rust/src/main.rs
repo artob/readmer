@@ -203,7 +203,7 @@ pub fn main() -> Result<(), SysexitsError> {
                     .unwrap();
                 let output = engine.render(template_name, context.clone()).unwrap();
 
-                println!("{}", output);
+                print!("{}", output);
             }
 
             Ok(())

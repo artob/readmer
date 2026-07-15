@@ -38,7 +38,8 @@ impl Engine for MinijinjaEngine {
     fn render(&mut self, name: String, context: Context) -> Result<String, RenderError> {
         let env = &mut self.0;
         let template = env.get_template(name.as_ref())?;
-        let output = template.render(context.into_json())?;
+        let mut output = template.render(context.into_json())?;
+        output.push('\n'); // ensure newline-termination
         Ok(output)
     }
 }
