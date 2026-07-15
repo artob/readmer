@@ -701,7 +701,7 @@ dependencies = [
 
 [[package]]
 name = "readmer"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "cargo_toml",
  "clap",
