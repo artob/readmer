@@ -8,7 +8,7 @@ use clientele::{
     crates::camino::Utf8PathBuf,
     crates::clap::{Parser, Subcommand},
 };
-use readmer::{Engine, Workspace};
+use readmer::{Context, Engine, Workspace};
 use std::{default, path::PathBuf};
 
 /// Readmer composes README.md files from Jinja2 or Liquid templates.
@@ -144,12 +144,12 @@ pub fn main() -> Result<(), SysexitsError> {
                 inputs
             };
 
-            let mut context = serde_json::json!({});
+            let mut context = Context::new();
             for define in defines {
                 let (k, v) = define
                     .split_once('=')
                     .unwrap_or_else(|| panic!("invalid --define: {}", define));
-                context[k] = serde_json::json!(v);
+                context.define(k, v);
             }
 
             for input in inputs {

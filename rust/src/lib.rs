@@ -19,6 +19,9 @@ pub struct ReadmeDoctests;
 
 use clientele::crates::camino::{Utf8Path, Utf8PathBuf};
 
+mod context;
+pub use context::*;
+
 #[cfg(feature = "alloc")]
 mod engine;
 #[cfg(feature = "alloc")]

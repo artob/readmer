@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::{Engine, RenderError, Utf8Path, Utf8PathBuf};
+use crate::{Context, Engine, RenderError, Utf8Path, Utf8PathBuf};
 use alloc::{
     boxed::Box,
     string::{String, ToString},
@@ -35,10 +35,10 @@ impl Engine for MinijinjaEngine {
         Ok(())
     }
 
-    fn render(&mut self, name: String, context: serde_json::Value) -> Result<String, RenderError> {
+    fn render(&mut self, name: String, context: Context) -> Result<String, RenderError> {
         let env = &mut self.0;
         let template = env.get_template(name.as_ref())?;
-        let output = template.render(context)?;
+        let output = template.render(context.into_json())?;
         Ok(output)
     }
 }

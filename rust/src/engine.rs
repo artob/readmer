@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::{RenderError, Utf8PathBuf};
+use crate::{Context, RenderError, Utf8PathBuf};
 use alloc::{
     boxed::Box,
     string::{String, ToString},
@@ -27,11 +27,7 @@ pub trait Engine: DynClone {
         Ok(())
     }
 
-    fn render(
-        &mut self,
-        _name: String,
-        _context: serde_json::Value,
-    ) -> Result<String, RenderError> {
+    fn render(&mut self, _name: String, _context: Context) -> Result<String, RenderError> {
         Err(RenderError::NotFound)
     }
 }

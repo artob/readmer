@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::{Engine, RenderError};
+use crate::{Context, Engine, RenderError};
 use alloc::{
     boxed::Box,
     collections::BTreeMap,
@@ -35,12 +35,13 @@ impl Engine for LiquidEngine {
         Ok(())
     }
 
-    fn render(&mut self, name: String, context: serde_json::Value) -> Result<String, RenderError> {
+    fn render(&mut self, name: String, context: Context) -> Result<String, RenderError> {
         let template_data = self.0.get(&name).ok_or(RenderError::NotFound)?;
         let template = liquid::ParserBuilder::with_stdlib()
             .build()?
             .parse(template_data)?;
-        let output = template.render(&liquid::to_object(&context)?)?;
+        let context = liquid::to_object(&context.into_json())?;
+        let output = template.render(&context)?;
         Ok(output)
     }
 }
