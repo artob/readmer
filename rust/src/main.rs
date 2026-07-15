@@ -8,8 +8,10 @@ use clientele::{
     crates::camino::Utf8PathBuf,
     crates::clap::{Parser, Subcommand},
 };
-use readmer::{Context, Engine, Workspace};
+use readmer::{Context, Engine, RenderError, Workspace};
 use std::{default, path::PathBuf};
+use thiserror::Error;
+use tracing::error;
 
 /// Readmer composes README.md files from Jinja2 or Liquid templates.
 #[derive(Debug, Parser)]
@@ -45,6 +47,10 @@ enum Command {
         /// The output format to use.
         #[clap(short, long, default_value = "json")]
         output: String,
+
+        /// Define a variable and value to pass to the templating engine.
+        #[clap(short = 'D', long = "define")]
+        defines: Vec<String>,
     },
 
     /// Render a template file to standard output.
@@ -78,7 +84,57 @@ impl Default for Command {
     }
 }
 
-pub fn main() -> Result<(), SysexitsError> {
+#[derive(Debug, Error)]
+pub enum ProgramError {
+    #[error("unknown --engine name: {0}")]
+    UnknownEngineName(String),
+
+    #[error("unknown --output format: {0}")]
+    UnknownOutputFormat(String),
+
+    #[error("invalid --define format: {0}")]
+    InvalidDefineFormat(String),
+
+    #[error(transparent)]
+    RenderError(#[from] RenderError),
+
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+
+    #[error(transparent)]
+    Exit(#[from] SysexitsError),
+
+    #[error(transparent)]
+    Other(#[from] Box<dyn core::error::Error>),
+}
+
+impl From<ProgramError> for SysexitsError {
+    fn from(error: ProgramError) -> Self {
+        use ProgramError::*;
+        match error {
+            Exit(code) => code,
+            _ => EX_SOFTWARE,
+        }
+    }
+}
+
+pub fn main() -> SysexitsError {
+    use ProgramError::*;
+
+    match run() {
+        Ok(()) => EX_OK,
+        Err(Exit(exit)) => exit,
+        Err(error) => {
+            // TODO: color coding
+            error!("{}: error: {}", env!("CARGO_PKG_NAME"), error);
+            error.into()
+        },
+    }
+}
+
+pub fn run() -> Result<(), ProgramError> {
+    use ProgramError::*;
+
     // Load environment variables from `.env`:
     clientele::dotenv().ok();
 
@@ -101,7 +157,22 @@ pub fn main() -> Result<(), SysexitsError> {
     }
 
     // Configure debug output:
-    if options.flags.debug {}
+    if options.flags.debug {
+        tracing_subscriber::fmt().init();
+    } else {
+        tracing_subscriber::fmt()
+            .with_writer(std::io::stderr)
+            .compact()
+            .without_time()
+            .with_target(false)
+            .with_level(false)
+            .with_thread_ids(false)
+            .with_thread_names(false)
+            .with_file(false)
+            .with_line_number(false)
+            .with_env_filter(tracing_subscriber::EnvFilter::from_default_env()) // respects RUST_LOG
+            .init();
+    }
 
     let mut result = Ok(());
 
@@ -121,23 +192,35 @@ pub fn main() -> Result<(), SysexitsError> {
             project,
             property,
             output,
-            ..
+            defines,
         } => {
             let project_path = project.unwrap_or_else(|| ".".into());
             let manifest_path = project_path.join("Cargo.toml");
-            let manifest = cargo_toml::Manifest::from_path(&manifest_path).unwrap();
-            let context = Context::from(manifest);
+
+            let mut context = match cargo_toml::Manifest::from_path(&manifest_path) {
+                Ok(manifest) => Context::from(manifest),
+                Err(_) => Context::default(),
+            };
+            for define in defines {
+                let (k, v) = define
+                    .split_once('=')
+                    .ok_or_else(|| InvalidDefineFormat(define.clone()))?;
+                context.define(k, v);
+            }
+
             match output.as_str() {
                 "json" => {
                     let mut json = context.into_json();
                     if let Some(property) = property {
                         json = json.get(property).cloned().unwrap_or_default();
                     }
-                    println!("{}", serde_json::to_string_pretty(&json).unwrap());
+                    println!(
+                        "{}",
+                        serde_json::to_string_pretty(&json).map_err(|e| Other(e.into()))?
+                    );
                 },
                 _ => {
-                    eprintln!("readmer: unknown output format: {}", output);
-                    return Err(SysexitsError::EX_USAGE);
+                    return Err(UnknownOutputFormat(output));
                 },
             }
         },
@@ -150,7 +233,7 @@ pub fn main() -> Result<(), SysexitsError> {
         } => {
             let (workspace, prefix) = match workspace {
                 Some(workspace) => (workspace, None),
-                None => Workspace::locate().unwrap(),
+                None => Workspace::locate().map_err(|e| Other(e.into()))?,
             };
 
             if inputs.is_empty() {
@@ -196,7 +279,7 @@ pub fn main() -> Result<(), SysexitsError> {
             for define in defines {
                 let (k, v) = define
                     .split_once('=')
-                    .unwrap_or_else(|| panic!("invalid --define: {}", define));
+                    .ok_or_else(|| InvalidDefineFormat(define.clone()))?;
                 context.define(k, v);
             }
 
@@ -210,24 +293,24 @@ pub fn main() -> Result<(), SysexitsError> {
                     "minijinja" | "jinja" | "jinja2" | "j2" => {
                         Box::new(readmer::MinijinjaEngine::new())
                     },
-                    _ => todo!(),
+                    _ => return Err(UnknownEngineName(engine_name.into())),
                 };
 
                 match engine.load_template(template_name.clone(), template_path.clone()) {
                     Ok(_) => {},
                     Err(error) => {
-                        eprintln!(
+                        error!(
                             "{}: failed to load template `{}`: {} for `{}`",
                             env!("CARGO_PKG_NAME"),
                             &template_name,
                             error,
                             &template_path
                         );
-                        result = Err(SysexitsError::EX_DATAERR);
+                        result = Err(Exit(EX_DATAERR));
                         continue;
                     },
                 };
-                let output = engine.render(template_name, context.clone()).unwrap();
+                let output = engine.render(template_name, context.clone())?;
 
                 print!("{}", output);
             }
