@@ -34,7 +34,6 @@ enum Command {
     },
 
     /// Describe the current project's metadata in JSON format.
-    #[cfg(feature = "unstable")]
     #[clap(aliases = ["d", "de", "des", "desc"])]
     Describe {
         /// The project directory to use [default: $PWD].
@@ -45,7 +44,7 @@ enum Command {
 
         /// The output format to use.
         #[clap(short, long, default_value = "json")]
-        output: Option<String>,
+        output: String,
     },
 
     /// Render a template file to standard output.
@@ -118,12 +117,29 @@ pub fn main() -> Result<(), SysexitsError> {
             Ok(())
         },
 
-        #[cfg(feature = "unstable")]
-        Command::Describe { project, .. } => {
-            let _project = project.unwrap_or_else(|| ".".into());
-
-            // TODO: implement `readmer describe`
-
+        Command::Describe {
+            project,
+            property,
+            output,
+            ..
+        } => {
+            let project_path = project.unwrap_or_else(|| ".".into());
+            let manifest_path = project_path.join("Cargo.toml");
+            let manifest = cargo_toml::Manifest::from_path(&manifest_path).unwrap();
+            let context = Context::from(manifest);
+            match output.as_str() {
+                "json" => {
+                    let mut json = context.into_json();
+                    if let Some(property) = property {
+                        json = json.get(property).cloned().unwrap_or_default();
+                    }
+                    println!("{}", serde_json::to_string_pretty(&json).unwrap());
+                },
+                _ => {
+                    eprintln!("readmer: unknown output format: {}", output);
+                    return Err(SysexitsError::EX_USAGE);
+                },
+            }
             Ok(())
         },
 
@@ -148,7 +164,8 @@ pub fn main() -> Result<(), SysexitsError> {
                 }
             };
 
-            let mut context = Context::new();
+            let manifest = cargo_toml::Manifest::from_path("Cargo.toml").unwrap();
+            let mut context = Context::from(manifest);
             for define in defines {
                 let (k, v) = define
                     .split_once('=')

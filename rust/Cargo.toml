@@ -16,6 +16,9 @@ keywords = ["readme", "markdown"]
 categories = ["command-line-utilities", "development-tools", "template-engine", "text-processing"]
 publish = true
 
+[package.metadata.readmer]
+foo = 42
+
 [features]
 default = ["all", "std"]
 all = ["engines"]
@@ -30,10 +33,11 @@ jinja2 = ["dep:minijinja"]
 liquid = ["dep:liquid"]
 
 [dependencies]
+cargo_toml = { version = "1.0", default-features = false }
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
 dyn-clone = { version = "1.0", default-features = false }
-serde_json = { version = "1.0", default-features = false }
+serde_json = { version = "1.0", default-features = false, features = ["preserve_order"] }
 thiserror = { version = "2", default-features = false }
 
 # Engines:
