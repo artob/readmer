@@ -16,8 +16,10 @@ keywords = ["readme", "markdown"]
 categories = ["command-line-utilities", "development-tools", "template-engine", "text-processing"]
 publish = true
 
-[package.metadata.readmer]
-foo = 42
+# See: https://readmer.dev
+[package.metadata.readmer.project]
+title = "Readmer"
+summary = "Readmer composes `README.md` files from Jinja2 or Liquid templates."
 
 [features]
 default = ["all", "std"]
