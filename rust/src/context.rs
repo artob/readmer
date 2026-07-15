@@ -3,7 +3,7 @@
 use alloc::string::String;
 use serde_json::{Map, Value, json};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Context(Map<String, Value>);
 
 impl Context {

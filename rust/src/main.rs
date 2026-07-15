@@ -190,8 +190,10 @@ pub fn main() -> Result<(), SysexitsError> {
                 })
                 .collect();
 
-            let manifest = cargo_toml::Manifest::from_path("Cargo.toml").unwrap();
-            let mut context = Context::from(manifest);
+            let mut context = match cargo_toml::Manifest::from_path("Cargo.toml") {
+                Ok(manifest) => Context::from(manifest),
+                Err(_) => Context::default(),
+            };
             for define in defines {
                 let (k, v) = define
                     .split_once('=')
