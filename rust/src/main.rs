@@ -141,7 +141,11 @@ pub fn main() -> Result<(), SysexitsError> {
             let inputs = if inputs.is_empty() {
                 vec![prefix.unwrap_or_default().join("README.md.liquid")] // TODO: find the prefix from the workspace
             } else {
-                inputs
+                if let Some(prefix) = prefix {
+                    inputs.into_iter().map(|input| prefix.join(input)).collect()
+                } else {
+                    inputs
+                }
             };
 
             let mut context = Context::new();
@@ -159,7 +163,9 @@ pub fn main() -> Result<(), SysexitsError> {
                     .unwrap_or("liquid");
                 let mut engine: Box<dyn Engine> = match engine_name {
                     "liquid" => Box::new(readmer::LiquidEngine::new()),
-                    "minijinja" | "jinja2" | "j2" => Box::new(readmer::MinijinjaEngine::new()),
+                    "minijinja" | "jinja" | "jinja2" | "j2" => {
+                        Box::new(readmer::MinijinjaEngine::new())
+                    },
                     _ => todo!(),
                 };
 
