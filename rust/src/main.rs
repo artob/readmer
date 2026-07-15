@@ -144,7 +144,7 @@ pub fn main() -> Result<(), SysexitsError> {
         },
 
         Command::Render {
-            inputs,
+            mut inputs,
             workspace,
             engine,
             defines,
@@ -154,15 +154,41 @@ pub fn main() -> Result<(), SysexitsError> {
                 None => Workspace::locate().unwrap(),
             };
 
-            let inputs = if inputs.is_empty() {
-                vec![prefix.unwrap_or_default().join("README.md.liquid")] // TODO: find the prefix from the workspace
-            } else {
-                if let Some(prefix) = prefix {
-                    inputs.into_iter().map(|input| prefix.join(input)).collect()
-                } else {
-                    inputs
-                }
-            };
+            if inputs.is_empty() {
+                // TODO: find an actual existing template, if any
+                inputs.push("README.md.liquid".into());
+            }
+            let inputs: Vec<(String, Utf8PathBuf)> = inputs
+                .into_iter()
+                .map(|input_path| {
+                    if input_path.has_root()
+                        || input_path.starts_with(".")
+                        || input_path.starts_with("..")
+                    {
+                        // Qualified paths are used as-is w/o further resolution,
+                        // but we do try to derive a sensible template name:
+                        let input_name = input_path.to_string();
+                        let input_name = input_name
+                            .split(".config/readmer/")
+                            .last()
+                            .map(ToString::to_string)
+                            .unwrap_or_else(|| input_name);
+                        (input_name, input_path)
+                    } else {
+                        // Unqualified paths are interpreted relative to the
+                        // workspace's prefixed configuration directory
+                        // (`$WORKSPACE/.config/readmer/$PREFIX/`), where the
+                        // prefix is the relative path to the workspace root:
+                        let input_name = prefix
+                            .clone()
+                            .unwrap_or_default()
+                            .join(input_path)
+                            .into_string();
+                        let input_path = workspace.template_path(&input_name);
+                        (input_name, input_path)
+                    }
+                })
+                .collect();
 
             let manifest = cargo_toml::Manifest::from_path("Cargo.toml").unwrap();
             let mut context = Context::from(manifest);
@@ -173,10 +199,10 @@ pub fn main() -> Result<(), SysexitsError> {
                 context.define(k, v);
             }
 
-            for input in inputs {
+            for (template_name, template_path) in inputs {
                 let engine_name = engine
                     .as_deref()
-                    .or_else(|| input.extension())
+                    .or_else(|| template_path.extension())
                     .unwrap_or("liquid");
                 let mut engine: Box<dyn Engine> = match engine_name {
                     "liquid" => Box::new(readmer::LiquidEngine::new()),
@@ -185,18 +211,6 @@ pub fn main() -> Result<(), SysexitsError> {
                     },
                     _ => todo!(),
                 };
-
-                let template_name = input.to_string();
-                let template_path =
-                    if input.has_root() || input.starts_with(".") || input.starts_with("..") {
-                        // Qualified paths are used as-is w/o further resolution:
-                        input
-                    } else {
-                        // Unqualified paths are interpreted as template paths
-                        // relative to the workspace's Readmer configuration
-                        // directory (`$WORKSPACE/.config/readmer/`):
-                        workspace.template_path(input)
-                    };
 
                 engine
                     .load_template(template_name.clone(), template_path)

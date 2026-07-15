@@ -70,7 +70,7 @@ readmer = { version = "0", default-features = false, features = ["alloc"] }
 ### Building the README.md File
 
 ```bash
-readmer build
+readmer render > README.md
 ```
 
 ### Importing the Library
