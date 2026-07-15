@@ -246,6 +246,7 @@ pub fn run() -> Result<(), ProgramError> {
                     if input_path.has_root()
                         || input_path.starts_with(".")
                         || input_path.starts_with("..")
+                        || input_path.starts_with(".config")
                     {
                         // Qualified paths are used as-is w/o further resolution,
                         // but we do try to derive a sensible template name:
