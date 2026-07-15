@@ -103,6 +103,8 @@ pub fn main() -> Result<(), SysexitsError> {
     // Configure debug output:
     if options.flags.debug {}
 
+    let mut result = Ok(());
+
     match options.command.unwrap_or_default() {
         #[cfg(feature = "unstable")]
         Command::Build { outputs } => {
@@ -113,8 +115,6 @@ pub fn main() -> Result<(), SysexitsError> {
             };
 
             // TODO: implement `readmer build`
-
-            Ok(())
         },
 
         Command::Describe {
@@ -140,7 +140,6 @@ pub fn main() -> Result<(), SysexitsError> {
                     return Err(SysexitsError::EX_USAGE);
                 },
             }
-            Ok(())
         },
 
         Command::Render {
@@ -214,15 +213,26 @@ pub fn main() -> Result<(), SysexitsError> {
                     _ => todo!(),
                 };
 
-                engine
-                    .load_template(template_name.clone(), template_path)
-                    .unwrap();
+                match engine.load_template(template_name.clone(), template_path.clone()) {
+                    Ok(_) => {},
+                    Err(error) => {
+                        eprintln!(
+                            "{}: failed to load template `{}`: {} for `{}`",
+                            env!("CARGO_PKG_NAME"),
+                            &template_name,
+                            error,
+                            &template_path
+                        );
+                        result = Err(SysexitsError::EX_DATAERR);
+                        continue;
+                    },
+                };
                 let output = engine.render(template_name, context.clone()).unwrap();
 
                 print!("{}", output);
             }
-
-            Ok(())
         },
-    }
+    };
+
+    result
 }
