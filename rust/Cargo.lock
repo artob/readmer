@@ -661,6 +661,7 @@ dependencies = [
  "dyn-clone",
  "liquid",
  "minijinja",
+ "serde_json",
  "thiserror",
 ]
 

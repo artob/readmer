@@ -27,7 +27,11 @@ pub trait Engine: DynClone {
         Ok(())
     }
 
-    fn render(&mut self, _name: String) -> Result<String, RenderError> {
+    fn render(
+        &mut self,
+        _name: String,
+        _context: serde_json::Value,
+    ) -> Result<String, RenderError> {
         Err(RenderError::NotFound)
     }
 }

@@ -35,10 +35,10 @@ impl Engine for MinijinjaEngine {
         Ok(())
     }
 
-    fn render(&mut self, name: String) -> Result<String, RenderError> {
+    fn render(&mut self, name: String, context: serde_json::Value) -> Result<String, RenderError> {
         let env = &mut self.0;
         let template = env.get_template(name.as_ref())?;
-        let output = template.render(&minijinja::context!())?; // TODO
+        let output = template.render(context)?;
         Ok(output)
     }
 }

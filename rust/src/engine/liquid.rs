@@ -35,12 +35,12 @@ impl Engine for LiquidEngine {
         Ok(())
     }
 
-    fn render(&mut self, name: String) -> Result<String, RenderError> {
+    fn render(&mut self, name: String, context: serde_json::Value) -> Result<String, RenderError> {
         let template_data = self.0.get(&name).ok_or(RenderError::NotFound)?;
         let template = liquid::ParserBuilder::with_stdlib()
             .build()?
             .parse(template_data)?;
-        let output = template.render(&liquid::object!({}))?; // TODO
+        let output = template.render(&liquid::to_object(&context)?)?;
         Ok(output)
     }
 }

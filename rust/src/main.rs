@@ -63,8 +63,8 @@ enum Command {
         engine: Option<String>,
 
         /// Define a variable and value to pass to the templating engine.
-        #[clap(short = 'D', long)]
-        define: Option<String>,
+        #[clap(short = 'D', long = "define")]
+        defines: Vec<String>,
     },
 }
 
@@ -74,7 +74,7 @@ impl Default for Command {
             inputs: Vec::new(),
             workspace: None,
             engine: None,
-            define: None,
+            defines: Vec::new(),
         }
     }
 }
@@ -131,7 +131,7 @@ pub fn main() -> Result<(), SysexitsError> {
             inputs,
             workspace,
             engine,
-            ..
+            defines,
         } => {
             let (workspace, prefix) = match workspace {
                 Some(workspace) => (workspace, None),
@@ -139,10 +139,18 @@ pub fn main() -> Result<(), SysexitsError> {
             };
 
             let inputs = if inputs.is_empty() {
-                vec!["README.md.j2".into()] // TODO: find the prefix from the workspace
+                vec![prefix.unwrap_or_default().join("README.md.liquid")] // TODO: find the prefix from the workspace
             } else {
                 inputs
             };
+
+            let mut context = serde_json::json!({});
+            for define in defines {
+                let (k, v) = define
+                    .split_once('=')
+                    .unwrap_or_else(|| panic!("invalid --define: {}", define));
+                context[k] = serde_json::json!(v);
+            }
 
             for input in inputs {
                 let engine_name = engine
@@ -154,7 +162,7 @@ pub fn main() -> Result<(), SysexitsError> {
                     "minijinja" | "jinja2" | "j2" => Box::new(readmer::MinijinjaEngine::new()),
                     _ => todo!(),
                 };
-                //let mut engine = dyn_clone::clone_box(&*engine);
+
                 let template_name = input.to_string();
                 let template_path =
                     if input.has_root() || input.starts_with(".") || input.starts_with("..") {
@@ -164,14 +172,14 @@ pub fn main() -> Result<(), SysexitsError> {
                         // Unqualified paths are interpreted as template paths
                         // relative to the workspace's Readmer configuration
                         // directory (`$WORKSPACE/.config/readmer/`):
-                        workspace
-                            .template_path(prefix.as_ref().map(|p| p.join(&input)).unwrap_or(input))
+                        workspace.template_path(input)
                     };
-                //eprintln!("{}", template_path);
+
                 engine
                     .load_template(template_name.clone(), template_path)
                     .unwrap();
-                let output = engine.render(template_name).unwrap();
+                let output = engine.render(template_name, context.clone()).unwrap();
+
                 println!("{}", output);
             }
 
