@@ -92,7 +92,6 @@ Readmer composes README.md files from Jinja2 or Liquid templates
 Usage: readmer [OPTIONS] [COMMAND]
 
 Commands:
-  build     Build ./README.md from templates in $WORKSPACE/.config/readmer/
   describe  Describe the current project's metadata in JSON format
   render    Render a template file to standard output
   help      Print this message or the help of the given subcommand(s)
@@ -104,24 +103,6 @@ Options:
   -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
   -V, --version        Print version information
   -h, --help           Print help (see more with '--help')
-```
-
-#### `readmer build`
-
-```console
-$ readmer build --help
-Build ./README.md from templates in $WORKSPACE/.config/readmer/
-
-Usage: readmer build [OPTIONS] [OUTPUTS]...
-
-Arguments:
-  [OUTPUTS]...  The output files to build [default: ./README.md]
-
-Options:
-      --color <COLOR>  Set the color output mode [default: auto] [possible values: auto, always, never]
-  -d, --debug          Enable debugging output
-  -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
-  -h, --help           Print help
 ```
 
 #### `readmer describe`
@@ -137,11 +118,12 @@ Arguments:
   [PROPERTY]  The project property to output [default: all properties]
 
 Options:
-      --color <COLOR>    Set the color output mode [default: auto] [possible values: auto, always, never]
-  -o, --output <OUTPUT>  The output format to use [default: json]
-  -d, --debug            Enable debugging output
-  -v, --verbose...       Enable verbose output (may be repeated for more verbosity)
-  -h, --help             Print help
+      --color <COLOR>     Set the color output mode [default: auto] [possible values: auto, always, never]
+  -o, --output <OUTPUT>   The output format to use [default: json]
+  -d, --debug             Enable debugging output
+  -D, --define <DEFINES>  Define a variable and value to pass to the templating engine
+  -v, --verbose...        Enable verbose output (may be repeated for more verbosity)
+  -h, --help              Print help
 ```
 
 #### `readmer render`
@@ -153,14 +135,14 @@ Render a template file to standard output
 Usage: readmer render [OPTIONS] [INPUTS]...
 
 Arguments:
-  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.j2]
+  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid]
 
 Options:
       --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
   -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
   -d, --debug                  Enable debugging output
-  -e, --engine <ENGINE>        The templating engine to use [default: minijinja]
-  -D, --define <DEFINE>        Define a variable and value to pass to the templating engine
+  -e, --engine <ENGINE>        The templating engine to use [default: auto]
+  -D, --define <DEFINES>       Define a variable and value to pass to the templating engine
   -v, --verbose...             Enable verbose output (may be repeated for more verbosity)
   -h, --help                   Print help
 ```

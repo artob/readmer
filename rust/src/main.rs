@@ -56,7 +56,7 @@ enum Command {
     /// Render a template file to standard output.
     #[clap(aliases = ["r", "re", "ren"])]
     Render {
-        /// The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.j2].
+        /// The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid].
         inputs: Vec<Utf8PathBuf>,
 
         /// The workspace directory to use [default: $WORKSPACE].
