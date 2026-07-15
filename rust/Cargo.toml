@@ -18,6 +18,7 @@ publish = true
 
 # See: https://readmer.dev
 [package.metadata.readmer.project]
+name = "Readmer"
 title = "Readmer"
 summary = "Readmer composes `README.md` files from Jinja2 or Liquid templates."
 

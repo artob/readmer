@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use alloc::string::String;
+use alloc::{format, string::String};
 use serde_json::{Map, Value, json};
 
 #[derive(Clone, Debug, Default)]
@@ -34,6 +34,7 @@ impl Context {
 
 impl From<cargo_toml::Manifest> for Context {
     fn from(manifest: cargo_toml::Manifest) -> Self {
+        use cargo_toml::Inheritable;
         assert!(!manifest.needs_workspace_inheritance());
         let package = manifest.package();
         let mut context = Self::new();
@@ -50,6 +51,18 @@ impl From<cargo_toml::Manifest> for Context {
                 "repository": package.repository,
             }),
         );
+        if let Some(Inheritable::Set(repository)) = package.repository.as_ref() {
+            context.define(
+                "github",
+                json!({
+                    // TODO: account
+                    "repository": {
+                        "link": repository,
+                        "url": format!("{}.git", repository),
+                    }
+                }),
+            );
+        }
         package.metadata.as_ref().map(|metadata| {
             metadata.get("readmer").map(|readmer| {
                 context.merge_json(json!(readmer));
