@@ -35,10 +35,10 @@ impl Engine for MinijinjaEngine {
         Ok(())
     }
 
-    fn render(&mut self, name: String, context: Context) -> Result<String, RenderError> {
+    fn render(&mut self, name: String, context: Box<dyn Context>) -> Result<String, RenderError> {
         let env = &mut self.0;
         let template = env.get_template(name.as_ref())?;
-        let mut output = template.render(context.into_json())?;
+        let mut output = template.render(context.to_json())?;
         output.push('\n'); // ensure newline-termination
         Ok(output)
     }

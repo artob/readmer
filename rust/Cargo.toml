@@ -17,17 +17,17 @@ categories = ["command-line-utilities", "development-tools", "template-engine", 
 publish = true
 
 # See: https://readmer.dev
-[package.metadata.readmer.project]
+[package.metadata.readmer.subproject]
 name = "Readmer"
 title = "Readmer"
 summary = "Readmer composes `README.md` files from Jinja2 or Liquid templates."
 
 [features]
 default = ["all", "std"]
-all = ["engines"]
-alloc = []
+all = ["engines", "languages"]
+alloc = ["dogma/alloc"]
 cli = ["std", "dep:clap", "dep:tracing-subscriber", "clientele/default", "clientele/tracing"]
-std = ["alloc", "derive_more/std", "liquid?/stdlib", "minijinja?/std_collections"]
+std = ["alloc", "derive_more/std", "dogma/std", "liquid?/stdlib", "minijinja?/std_collections"]
 unstable = []
 
 # Engines:
@@ -35,11 +35,19 @@ engines = ["jinja2", "liquid"]
 jinja2 = ["dep:minijinja"]
 liquid = ["dep:liquid"]
 
+# Languages:
+languages = ["rust"]
+rust = []
+
 [dependencies]
+camino = { version = "1.2", default-features = false }
 cargo_toml = { version = "1.0", default-features = false }
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
+dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
 dyn-clone = { version = "1.0", default-features = false }
+figment2 = { version = "0.11", default-features = false, features = ["env", "yaml"] }
+serde = { version = "1", default-features = false, features = ["derive"] }
 serde_json = { version = "1.0", default-features = false, features = ["preserve_order"] }
 thiserror = { version = "2", default-features = false }
 tracing = { version = "0.1", default-features = false }

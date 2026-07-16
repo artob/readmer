@@ -27,7 +27,7 @@ pub trait Engine: DynClone {
         Ok(())
     }
 
-    fn render(&mut self, _name: String, _context: Context) -> Result<String, RenderError> {
+    fn render(&mut self, _name: String, _context: Box<dyn Context>) -> Result<String, RenderError> {
         Err(RenderError::NotFound)
     }
 }

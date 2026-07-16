@@ -18,6 +18,10 @@ extern crate std;
 pub struct ReadmeDoctests;
 
 use clientele::crates::camino::{Utf8Path, Utf8PathBuf};
+use dogma::{AncestorPath, FromPathError};
+
+mod config;
+pub use config::*;
 
 mod context;
 pub use context::*;
@@ -29,6 +33,11 @@ pub use engine::*;
 
 mod error;
 pub use error::*;
+
+pub mod model;
+
+mod path;
+pub use path::*;
 
 mod tools;
 pub use tools::*;

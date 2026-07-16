@@ -1,0 +1,5 @@
+---
+label: Readmer
+title: Readmer
+summary:
+  Readmer composes `README.md` files from Jinja2 or Liquid templates.

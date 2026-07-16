@@ -41,13 +41,13 @@ impl Engine for LiquidEngine {
         Ok(())
     }
 
-    fn render(&mut self, name: String, context: Context) -> Result<String, RenderError> {
+    fn render(&mut self, name: String, context: Box<dyn Context>) -> Result<String, RenderError> {
         let template_data = self.0.get(&name).ok_or(RenderError::NotFound)?;
         let template = liquid::ParserBuilder::with_stdlib()
             .partials(partials())
             .build()?
             .parse(template_data)?;
-        let context = liquid::to_object(&context.into_json())?;
+        let context = liquid::to_object(&context.to_json())?;
         let output = template.render(&context)?;
         Ok(output) // always newline-terminated
     }

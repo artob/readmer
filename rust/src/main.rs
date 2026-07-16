@@ -8,7 +8,10 @@ use clientele::{
     crates::camino::Utf8PathBuf,
     crates::clap::{Parser, Subcommand},
 };
-use readmer::{Context, Engine, RenderError, Workspace};
+use readmer::{
+    Context, DirContext, Engine, RenderError, Workspace,
+    model::{LoadError, Package, Project},
+};
 use std::{default, path::PathBuf};
 use thiserror::Error;
 use tracing::error;
@@ -27,6 +30,11 @@ struct Options {
 
 #[derive(Debug, Subcommand)]
 enum Command {
+    /// TODO
+    #[cfg(feature = "unstable")]
+    #[clap(aliases = ["i", "in", "ini", "install"])]
+    Init {},
+
     /// Build ./README.md from templates in $WORKSPACE/.config/readmer/.
     #[cfg(feature = "unstable")]
     #[clap(aliases = ["b", "bu", "bui", "buidl"])]
@@ -43,6 +51,10 @@ enum Command {
 
         /// The project property to output [default: all properties].
         property: Option<String>,
+
+        /// The workspace directory to use [default: $WORKSPACE].
+        #[clap(short = 'W', long)]
+        workspace: Option<Workspace>,
 
         /// The output format to use.
         #[clap(short, long, default_value = "json")]
@@ -97,6 +109,9 @@ pub enum ProgramError {
 
     #[error(transparent)]
     RenderError(#[from] RenderError),
+
+    #[error(transparent)]
+    LoadError(#[from] LoadError),
 
     #[error(transparent)]
     Io(#[from] std::io::Error),
@@ -178,29 +193,29 @@ pub fn run() -> Result<(), ProgramError> {
 
     match options.command.unwrap_or_default() {
         #[cfg(feature = "unstable")]
+        Command::Init {} => {
+            // TODO: implement `readmer init`
+        },
+
+        #[cfg(feature = "unstable")]
         Command::Build { outputs } => {
             let _outputs = if outputs.is_empty() {
                 vec!["README.md".into()]
             } else {
                 outputs
             };
-
             // TODO: implement `readmer build`
         },
 
         Command::Describe {
-            project,
+            project: _, // FIXME: reimplement `readmer describe --project`
             property,
+            workspace,
             output,
             defines,
         } => {
-            let project_path = project.unwrap_or_else(|| ".".into());
-            let manifest_path = project_path.join("Cargo.toml");
-
-            let mut context = match cargo_toml::Manifest::from_path(&manifest_path) {
-                Ok(manifest) => Context::from(manifest),
-                Err(_) => Context::default(),
-            };
+            let workspace = workspace.map(Ok).unwrap_or_else(|| Workspace::locate())?;
+            let mut context = DirContext { workspace }.load()?;
             for define in defines {
                 let (k, v) = define
                     .split_once('=')
@@ -231,10 +246,17 @@ pub fn run() -> Result<(), ProgramError> {
             engine,
             defines,
         } => {
-            let (workspace, prefix) = match workspace {
-                Some(workspace) => (workspace, None),
-                None => Workspace::locate().map_err(|e| Other(e.into()))?,
-            };
+            let workspace = workspace.map(Ok).unwrap_or_else(|| Workspace::locate())?;
+            let mut context = DirContext {
+                workspace: workspace.clone(),
+            }
+            .load()?;
+            for define in defines {
+                let (k, v) = define
+                    .split_once('=')
+                    .ok_or_else(|| InvalidDefineFormat(define.clone()))?;
+                context.define(k, v);
+            }
 
             if inputs.is_empty() {
                 // TODO: find an actual existing template, if any
@@ -262,27 +284,12 @@ pub fn run() -> Result<(), ProgramError> {
                         // workspace's prefixed configuration directory
                         // (`$WORKSPACE/.config/readmer/$PREFIX/`), where the
                         // prefix is the relative path to the workspace root:
-                        let input_name = prefix
-                            .clone()
-                            .unwrap_or_default()
-                            .join(input_path)
-                            .into_string();
-                        let input_path = workspace.template_path(&input_name);
-                        (input_name, input_path)
+                        let input_name = workspace.as_ref().down.join(input_path);
+                        let input_path = workspace.config_path().join(&input_name);
+                        (input_name.into_string(), input_path)
                     }
                 })
                 .collect();
-
-            let mut context = match cargo_toml::Manifest::from_path("Cargo.toml") {
-                Ok(manifest) => Context::from(manifest),
-                Err(_) => Context::default(),
-            };
-            for define in defines {
-                let (k, v) = define
-                    .split_once('=')
-                    .ok_or_else(|| InvalidDefineFormat(define.clone()))?;
-                context.define(k, v);
-            }
 
             for (template_name, template_path) in inputs {
                 let engine_name = engine
@@ -311,7 +318,7 @@ pub fn run() -> Result<(), ProgramError> {
                         continue;
                     },
                 };
-                let output = engine.render(template_name, context.clone())?;
+                let output = engine.render(template_name, Box::new(context.clone()))?;
 
                 print!("{}", output);
             }
