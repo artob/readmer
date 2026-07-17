@@ -54,8 +54,14 @@ impl PartialSource for EmbedSource {
         }
 
         match Self::get(name) {
-            None => None, // file not found
-            Some(embed) => convert_cow_bytes_to_str(embed.data).ok(),
+            None => {
+                tracing::info!("Failed to find the embed {name:?}.");
+                None
+            },
+            Some(embed) => {
+                tracing::info!("Loaded the embed {name:?}.");
+                convert_cow_bytes_to_str(embed.data).ok()
+            },
         }
     }
 }

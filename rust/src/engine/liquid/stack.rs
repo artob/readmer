@@ -55,6 +55,7 @@ impl PartialSource for StackSource {
     }
 
     fn try_get<'a>(&'a self, name: &str) -> Option<Cow<'a, str>> {
+        tracing::debug!("Resolving the partial {:?}...", name);
         for source in self.sources.iter() {
             if let Some(content) = source.try_get(name) {
                 return Some(content);
