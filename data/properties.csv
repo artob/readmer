@@ -1,12 +1,12 @@
 Property,Type,Sample
-`project.label`,string,`"Readmer"`
-`project.title`,string,`"Readmer: READMEs Made Simple"`
-`project.summary`,string,`"Readmer composes README.md files from templates."`
-`subproject.label`,string,`"Readmer.py"`
-`subproject.title`,string,`"Readmer.py: Readmer for Python"`
-`subproject.summary`,string,`"Readmer composes README.md files from templates."`
-`github.account.handle`,string,`"artob"`
-`github.account.link`,string,`"https://github.com/artob"`
-`github.repository.slug`,string,`"artob/readmer"`
-`github.repository.link`,string,`"https://github.com/artob/readmer"`
-`github.repository.url`,string,`"https://github.com/artob/readmer.git"`
+`{{ project.label }}`,string,`"Readmer"`
+`{{ project.title }}`,string,`"Readmer: READMEs Made Simple"`
+`{{ project.summary }}`,string,`"Readmer composes README.md files from templates."`
+`{{ subproject.label }}`,string,`"Readmer.py"`
+`{{ subproject.title }}`,string,`"Readmer.py: Readmer for Python"`
+`{{ subproject.summary }}`,string,`"Readmer composes README.md files from templates."`
+`{{ github.account.handle }}`,string,`"artob"`
+`{{ github.account.link }}`,string,`"https://github.com/artob"`
+`{{ github.repository.slug }}`,string,`"artob/readmer"`
+`{{ github.repository.link }}`,string,`"https://github.com/artob/readmer"`
+`{{ github.repository.url }}`,string,`"https://github.com/artob/readmer.git"`

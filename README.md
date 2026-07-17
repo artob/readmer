@@ -209,31 +209,31 @@ The title of this project is "{{ project.title }}"
 
 | Property | Type | Sample |
 | -------- | ---- | ------ |
-| `project.label` | string | `"Readmer"` |
-| `project.title` | string | `"Readmer: READMEs Made Simple"` |
-| `project.summary` | string | `"Readmer composes README.md files from templates."` |
-| `subproject.label` | string | `"Readmer.py"` |
-| `subproject.title` | string | `"Readmer.py: Readmer for Python"` |
-| `subproject.summary` | string | `"Readmer composes README.md files from templates."` |
-| `github.account.handle` | string | `"artob"` |
-| `github.account.link` | string | `"https://github.com/artob"` |
-| `github.repository.slug` | string | `"artob/readmer"` |
-| `github.repository.link` | string | `"https://github.com/artob/readmer"` |
-| `github.repository.url` | string | `"https://github.com/artob/readmer.git"` |
+| `{{ project.label }}` | string | `"Readmer"` |
+| `{{ project.title }}` | string | `"Readmer: READMEs Made Simple"` |
+| `{{ project.summary }}` | string | `"Readmer composes README.md files from templates."` |
+| `{{ subproject.label }}` | string | `"Readmer.py"` |
+| `{{ subproject.title }}` | string | `"Readmer.py: Readmer for Python"` |
+| `{{ subproject.summary }}` | string | `"Readmer composes README.md files from templates."` |
+| `{{ github.account.handle }}` | string | `"artob"` |
+| `{{ github.account.link }}` | string | `"https://github.com/artob"` |
+| `{{ github.repository.slug }}` | string | `"artob/readmer"` |
+| `{{ github.repository.link }}` | string | `"https://github.com/artob/readmer"` |
+| `{{ github.repository.url }}` | string | `"https://github.com/artob/readmer.git"` |
 
 ### Standard Partials
 
 | Partial | Summary |
 | ------- | ------- |
-| `render 'badge/unlicense'` | A 'Public Domain' badge that links to unlicense.org |
-| `render 'footer/share'` | A set of badges for sharing to X, Reddit, HN, Facebook, and LinkedIn |
-| `render 'header/badges/dart'` | Some common above-the-fold badges for Dart projects |
-| `render 'header/badges/js'` | Some common above-the-fold badges for JavaScript/TypeScript projects |
-| `render 'header/badges/python'` | Some common above-the-fold badges for Python projects |
-| `render 'header/badges/ruby'` | Some common above-the-fold badges for Ruby projects |
-| `render 'header/badges/rust'` | Some common above-the-fold badges for Rust projects |
-| `render 'header/toc'` | Quick jump links to common Table of Contents (ToC) sections |
-| `render 'section/development'` | A shrink-wrap 'Development' section with Git instructions |
+| `{% render 'badge/unlicense' %}` | A 'Public Domain' badge that links to unlicense.org |
+| `{% render 'footer/share' %}` | A set of badges for sharing to X, Reddit, HN, Facebook, and LinkedIn |
+| `{% render 'header/badges/dart' %}` | Some common above-the-fold badges for Dart projects |
+| `{% render 'header/badges/js' %}` | Some common above-the-fold badges for JavaScript/TypeScript projects |
+| `{% render 'header/badges/python' %}` | Some common above-the-fold badges for Python projects |
+| `{% render 'header/badges/ruby' %}` | Some common above-the-fold badges for Ruby projects |
+| `{% render 'header/badges/rust' %}` | Some common above-the-fold badges for Rust projects |
+| `{% render 'header/toc' %}` | Quick jump links to common Table of Contents (ToC) sections |
+| `{% render 'section/development' %}` | A shrink-wrap 'Development' section with Git instructions |
 
 ## 👨‍💻 Development
 

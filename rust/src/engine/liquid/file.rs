@@ -71,6 +71,7 @@ impl FileSource {
                     })
                     .has_headers(true)
                     .from_path(path)?;
+                output.push_str("{% raw -%}");
                 if let Ok(headers) = reader.headers() {
                     output.push('|');
                     for column in headers {
@@ -101,6 +102,7 @@ impl FileSource {
                     }
                     output.push('\n');
                 }
+                output.push_str("{%- endraw %}");
                 output.truncate(output.trim_ascii_end().len());
                 Ok(output)
             },
