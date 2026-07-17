@@ -207,6 +207,20 @@ The title of this project is "{{ project.title }}"
 
 ### Template Properties
 
+| Property | Type | Sample |
+| -------- | ---- | ------ |
+| `project.label` | string | `"Readmer"` |
+| `project.title` | string | `"Readmer: READMEs Made Simple"` |
+| `project.summary` | string | `"Readmer composes README.md files from templates."` |
+| `subproject.label` | string | `"Readmer.py"` |
+| `subproject.title` | string | `"Readmer.py: Readmer for Python"` |
+| `subproject.summary` | string | `"Readmer composes README.md files from templates."` |
+| `github.account.handle` | string | `"artob"` |
+| `github.account.link` | string | `"https://github.com/artob"` |
+| `github.repository.slug` | string | `"artob/readmer"` |
+| `github.repository.link` | string | `"https://github.com/artob/readmer"` |
+| `github.repository.url` | string | `"https://github.com/artob/readmer.git"` |
+
 ## 👨‍💻 Development
 
 ```bash
@@ -233,6 +247,7 @@ git clone https://github.com/artob/readmer.git
 [Jinja2]: https://jinja.palletsprojects.com
 [Linguist]: https://github.com/github-linguist/linguist
 [Liquid]: https://shopify.dev/docs/api/liquid
+[liquid]: https://crates.io/crates/liquid
 [minijinja]: https://crates.io/crates/minijinja
 
 [@cobalt-org]: https://github.com/cobalt-org
