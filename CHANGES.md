@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.0.4 - 2026-07-17
+### Added
+- Embed `{% render 'table.csv' %}` partials as Markdown tables
+- Embed `{% render 'data.json' %}` as pretty-printed JSON code blocks
+- Embed `{% render 'example.rs' %}` as syntax-highlighted code blocks
+- Support syntax highlighting for all file types recognized by Linguist
+### Changed
+- Bump MSRV to 1.87 because of `std::io::ErrorKind::InvalidFilename`
+- Resolve partials from the workspace as a fallback path
+
 ## 0.0.3 - 2026-07-16
 ### Added
 - Define `project.{label,title,summary}`

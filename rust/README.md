@@ -24,8 +24,10 @@
 
 - Available both as the command-line tool [`readmer`] and a Rust library.
 - Build `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
-- 100% pure and safe Rust with minimal dependencies and no bloat.
-- Designed for `#![no_std]` environment compatibility from the get-go.
+- Embeds `{% render 'table.csv' %}` partials as Markdown tables.
+- Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
+- Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
+- Supports syntax highlighting for all file types recognized by [Linguist].
 - Supports opting out of any feature using comprehensive [feature flags].
 - Adheres to the Rust API Guidelines in its [naming conventions].
 - Polyglot software also available for Dart, Python, Ruby, and TypeScript.
@@ -164,5 +166,6 @@ git clone https://github.com/artob/readmer.git
 [feature flags]: https://docs.rs/crate/readmer/latest/features
 [naming conventions]: https://rust-lang.github.io/api-guidelines/naming.html
 
+[Linguist]: https://github.com/github-linguist/linguist
 [Rust]: https://rust-lang.org
 [`readmer`]: #command-line-interface
