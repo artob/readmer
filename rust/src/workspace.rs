@@ -53,9 +53,6 @@ impl Workspace {
     }
 
     pub fn join(&self, path: impl AsRef<Utf8Path>) -> Utf8PathBuf {
-        match self.0.up {
-            Some(ref up) => up.to_path_buf().join(path),
-            None => path.as_ref().to_path_buf(),
-        }
+        self.0.join(path)
     }
 }

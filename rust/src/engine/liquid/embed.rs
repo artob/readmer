@@ -1,13 +1,17 @@
 // This is free and unencumbered software released into the public domain.
 
-use alloc::{borrow::Cow, string::ToString, vec, vec::Vec};
+use alloc::{
+    borrow::{Cow, ToOwned},
+    string::ToString,
+    vec,
+    vec::Vec,
+};
 use liquid::{
     Template,
     partials::{EagerCompiler, LazyCompiler, PartialSource},
     reflection::ParserReflection,
 };
 use rust_embed::Embed;
-use std::borrow::ToOwned;
 
 pub type EmbedPartials = LazyCompiler<EmbedSource>;
 

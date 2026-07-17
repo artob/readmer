@@ -2,7 +2,7 @@
 
 use crate::{AncestorPath, FromPathError, Utf8PathBuf};
 use alloc::vec::Vec;
-use camino::{FromPathBufError, Utf8Components};
+use camino::{FromPathBufError, Utf8Components, Utf8Path};
 use core::str::FromStr;
 
 /// A relative path within the workspace.
@@ -40,5 +40,14 @@ impl FromStr for RootedPath {
         }
         let down = Utf8PathBuf::from_iter(parts);
         Ok(Self { up: Some(up), down })
+    }
+}
+
+impl RootedPath {
+    pub fn join(&self, path: impl AsRef<Utf8Path>) -> Utf8PathBuf {
+        match self.up {
+            Some(ref up) => up.to_path_buf().join(path),
+            None => path.as_ref().to_path_buf(),
+        }
     }
 }
