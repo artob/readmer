@@ -6,7 +6,7 @@ version = "0.0.4"
 authors = ["Arto Bendiken"]
 edition = "2024"
 rust-version = "1.87" # because `std::io::ErrorKind::InvalidFilename`
-description = "Compose README.md files from Jinja2 or Liquid templates."
+description = "Compose README.md files from Liquid or Jinja2 templates."
 #documentation = "https://docs.rs/readmer"
 readme = true
 homepage = "https://readmer.dev"
@@ -18,9 +18,9 @@ publish = true
 
 # See: https://readmer.dev
 [package.metadata.readmer.subproject]
-name = "Readmer"
-title = "Readmer"
-summary = "Readmer composes `README.md` files from Jinja2 or Liquid templates."
+name = "Readmer.rs"
+title = "Readmer: Readmer for Rust"
+summary = "Readmer composes `README.md` files from Liquid or Jinja2 templates."
 
 [features]
 default = ["all", "std"]
@@ -36,13 +36,16 @@ jinja2 = ["dep:minijinja"]
 liquid = ["dep:liquid"]
 
 # Languages:
-languages = ["csv", "rust"]
+languages = ["csv", "dart", "js", "python", "ruby", "rust"]
 csv = ["dep:csv"]
-rust = []
+dart = []
+js = []
+python = ["dep:pyproject-toml"]
+ruby = []
+rust = ["dep:cargo_toml"]
 
 [dependencies]
 camino = { version = "1.2", default-features = false }
-cargo_toml = { version = "1.0", default-features = false }
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
 dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
@@ -61,7 +64,9 @@ liquid = { version = "0.26", default-features = false, optional = true }
 minijinja = { version = "2.21", default-features = false, features = ["json", "serde"], optional = true }
 
 # Languages:
+cargo_toml = { version = "1.0", default-features = false, optional = true }
 csv = { version = "1.4", default-features = false, optional = true }
+pyproject-toml = { version = "0.13", default-features = false, optional = true }
 
 # CLI:
 clap = { version = "4.5", default-features = false, optional = true }

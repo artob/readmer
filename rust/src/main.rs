@@ -16,7 +16,7 @@ use std::{default, path::PathBuf};
 use thiserror::Error;
 use tracing::error;
 
-/// Readmer composes README.md files from Jinja2 or Liquid templates.
+/// Readmer composes README.md files from Liquid or Jinja2 templates.
 #[derive(Debug, Parser)]
 #[command(name = "Readmer", long_about)]
 #[command(arg_required_else_help = true)]

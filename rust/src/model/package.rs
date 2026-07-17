@@ -2,7 +2,11 @@
 
 use super::LoadError;
 use crate::Utf8Path;
-use alloc::{format, string::String, vec::Vec};
+use alloc::{
+    format,
+    string::{String, ToString},
+    vec::Vec,
+};
 use figment2::{
     Figment,
     providers::{Env, Format, Yaml},
@@ -43,9 +47,16 @@ pub struct Package {
 impl Package {
     pub fn locate(dir_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let dir_path = dir_path.as_ref();
-        let file_path = dir_path.join("Cargo.toml");
-        if file_path.exists() {
-            return Self::load(file_path);
+        for file_name in [
+            #[cfg(feature = "rust")]
+            "Cargo.toml",
+            #[cfg(feature = "python")]
+            "pyproject.toml",
+        ] {
+            let file_path = dir_path.join(file_name);
+            if file_path.exists() {
+                return Self::load(file_path);
+            }
         }
         Err(LoadError::NoPackageFound(dir_path.into()))
     }
@@ -53,11 +64,15 @@ impl Package {
     pub fn load(file_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let file_path = file_path.as_ref();
         Ok(match file_path.file_name() {
-            #[cfg(feature = "rust")]
-            Some(file_name) if file_name == "Cargo.toml" => {
-                cargo_toml::Manifest::from_path(file_path)?.try_into()?
+            #[cfg(feature = "python")]
+            Some("pyproject.toml") => {
+                let input = std::fs::read_to_string(file_path).unwrap();
+                let pyproject = pyproject_toml::PyProjectToml::new(&input).unwrap();
+                pyproject.into()
             },
-            // TODO: Dart, JS, Python, Ruby
+            #[cfg(feature = "rust")]
+            Some("Cargo.toml") => cargo_toml::Manifest::from_path(file_path)?.try_into()?,
+            // TODO: Dart, JS, Ruby
             _ => {
                 return Err(LoadError::UnknownPackageFormat(file_path.into()));
             },
@@ -80,6 +95,35 @@ impl Package {
             "repository": self.repository,
             "metadata": self.metadata,
         })
+    }
+}
+
+#[cfg(feature = "python")]
+impl From<pyproject_toml::PyProjectToml> for Package {
+    fn from(input: pyproject_toml::PyProjectToml) -> Self {
+        use pyproject_toml::{Contact, License};
+        let project = input.project.unwrap();
+        let project_urls = project.urls.unwrap_or_default();
+        Self {
+            name: project.name.to_string(),
+            authors: project
+                .authors
+                .unwrap_or_default()
+                .iter()
+                .filter_map(Contact::name)
+                .map(ToString::to_string)
+                .collect(),
+            description: project.description,
+            homepage: project_urls.get("Homepage").cloned(),
+            keywords: project.keywords.unwrap_or_default(),
+            categories: project.classifiers.unwrap_or_default(),
+            license: match project.license {
+                Some(License::Spdx(s)) => Some(s),
+                _ => None,
+            },
+            repository: project_urls.get("Repository").cloned(),
+            metadata: None, // TODO
+        }
     }
 }
 

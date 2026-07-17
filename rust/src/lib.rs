@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-//! Readmer composes `README.md` files from Jinja2 or Liquid templates.
+//! Readmer composes `README.md` files from Liquid or Jinja2 templates.
 
 #![no_std]
 #![forbid(unsafe_code)]
