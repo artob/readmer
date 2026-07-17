@@ -299,9 +299,9 @@ pub fn run() -> Result<(), ProgramError> {
                     .or_else(|| template_path.extension())
                     .unwrap_or("liquid");
                 let mut engine: Box<dyn Engine> = match engine_name {
-                    "liquid" => Box::new(readmer::LiquidEngine::new()),
+                    "liquid" => Box::new(readmer::LiquidEngine::new(workspace.clone())),
                     "minijinja" | "jinja" | "jinja2" | "j2" => {
-                        Box::new(readmer::MinijinjaEngine::new())
+                        Box::new(readmer::MinijinjaEngine::new(workspace.clone()))
                     },
                     _ => return Err(UnknownEngineName(engine_name.into())),
                 };

@@ -24,16 +24,25 @@ pub type FilePartials = LazyCompiler<FileSource>;
 
 #[derive(Clone, Debug, Default)]
 pub struct FileSource {
-    base: RootedPath,
+    dirs: Vec<RootedPath>,
 }
 
 impl FileSource {
-    pub fn new(base: RootedPath) -> Self {
-        Self { base }
+    pub fn new(dirs: Vec<RootedPath>) -> Self {
+        Self { dirs }
     }
 
     fn load(&self, name: &str) -> Result<String> {
-        let path = self.join(name);
+        for dir in &self.dirs {
+            let path = dir.join(name);
+            if let Ok(output) = self.load_from_path(path) {
+                return Ok(output);
+            }
+        }
+        Err(ErrorKind::NotFound.into())
+    }
+
+    fn load_from_path(&self, path: Utf8PathBuf) -> Result<String> {
         if !path.try_exists()? {
             return Err(ErrorKind::NotFound.into());
         }
@@ -131,15 +140,16 @@ impl FileSource {
             code = code.trim_ascii_end()
         )
     }
-
-    fn join(&self, name: &str) -> Utf8PathBuf {
-        self.base.join(name)
-    }
 }
 
 impl PartialSource for FileSource {
     fn contains(&self, name: &str) -> bool {
-        self.join(name).exists()
+        for dir in &self.dirs {
+            if dir.join(name).exists() {
+                return true;
+            }
+        }
+        false
     }
 
     fn names<'a>(&'a self) -> Vec<&'a str> {

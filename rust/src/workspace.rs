@@ -44,6 +44,10 @@ impl Workspace {
         Ok(Self(RootedPath { up, down }))
     }
 
+    pub fn path(&self) -> &RootedPath {
+        &self.0
+    }
+
     pub fn config(&self) -> Config {
         Config(self.config_path())
     }
