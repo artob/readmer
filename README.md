@@ -7,24 +7,39 @@
 [![Package on PyPI](https://img.shields.io/pypi/v/readmer)](https://pypi.org/project/readmer)
 [![Package on RubyGems](https://img.shields.io/gem/v/readmer)](https://rubygems.org/gems/readmer)
 
-**Readmer composes `README.md` files from Jinja2 or Liquid templates.**
+**Readmer composes `README.md` files from Liquid or Jinja2 templates.**
 
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a polyglot library.
-- Build `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
+- Build `README.md` from Liquid/Jinja2/etc templates in `.config/readmer/`.
+- Embeds `{% render 'table.csv' %}` partials as Markdown tables.
+- Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
+- Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
+- Supports syntax highlighting for all file types recognized by [Linguist].
+- Supports opting out of any feature using comprehensive [feature flags].
 - Polyglot software available for Dart, Python, Ruby, Rust, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
 ## ⬇️ Installation
 
-### Installation from [Crates.io]
+### Installation of the CLI
+
+#### Installation via [Cargo]
+
+```bash
+cargo install readmer --locked --features=cli
+```
+
+### Installation of the Library
+
+#### Installation from [Crates.io]
 
 ```bash
 cargo add --dev readmer
 ```
 
-### Installation from [NPM]
+#### Installation from [NPM]
 
 ```bash
 npm install --save-dev readmer.js
@@ -33,14 +48,14 @@ pnpm add --save-dev readmer.js
 yarn add --dev readmer.js
 ```
 
-### Installation from [Pub.dev]
+#### Installation from [Pub.dev]
 
 ```bash
 dart pub add dev:readmer
 flutter pub add dev:readmer
 ```
 
-### Installation from [PyPI]
+#### Installation from [PyPI]
 
 ```bash
 pip install -U readmer
@@ -49,7 +64,7 @@ poetry add --group dev readmer
 pdm add -d readmer
 ```
 
-### Installation from [RubyGems]
+#### Installation from [RubyGems]
 
 ```bash
 gem install readmer
@@ -70,6 +85,7 @@ git clone https://github.com/artob/readmer.git
 [![Share on Facebook](https://img.shields.io/badge/share%20on-fb-1976D2?logo=facebook)](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 [![Share on LinkedIn](https://img.shields.io/badge/share%20on-linkedin-3949AB?logo=linkedin)](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 
+[Cargo]: https://rustup.rs
 [Crates.io]: https://crates.io/crates/readmer
 [NPM]: https://npmjs.com/package/readmer.js
 [Pub.dev]: https://pub.dev/packages/readmer

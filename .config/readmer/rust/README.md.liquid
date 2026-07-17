@@ -9,7 +9,7 @@
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a Rust library.
-- Build `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
+- Build `README.md` from Liquid/Jinja2/etc templates in `.config/readmer/`.
 {% raw -%}
 - Embeds `{% render 'table.csv' %}` partials as Markdown tables.
 - Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
@@ -30,7 +30,7 @@
 ### Installation of the CLI via Cargo
 
 ```bash
-cargo install {{ package.name }} --features=cli
+cargo install {{ package.name }} --locked --features=cli
 ```
 
 ### Installation of the Library via Cargo

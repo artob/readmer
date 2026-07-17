@@ -5,7 +5,7 @@
 [![Package](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
 [![Documentation](https://img.shields.io/docsrs/readmer?label=docs.rs)](https://docs.rs/readmer)
 
-**Readmer composes `README.md` files from Jinja2 or Liquid templates.**
+**Readmer composes `README.md` files from Liquid or Jinja2 templates.**
 
 <sub>
 
@@ -23,7 +23,7 @@
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a Rust library.
-- Build `README.md` from Jinja2/Liquid/etc templates in `.config/readmer/`.
+- Build `README.md` from Liquid/Jinja2/etc templates in `.config/readmer/`.
 - Embeds `{% render 'table.csv' %}` partials as Markdown tables.
 - Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
 - Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
@@ -42,7 +42,7 @@
 ### Installation of the CLI via Cargo
 
 ```bash
-cargo install readmer --features=cli
+cargo install readmer --locked --features=cli
 ```
 
 ### Installation of the Library via Cargo
