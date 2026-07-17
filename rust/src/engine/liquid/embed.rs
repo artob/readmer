@@ -45,7 +45,11 @@ impl PartialSource for EmbedSource {
                 Cow::Borrowed(bytes) => {
                     Cow::Borrowed(core::str::from_utf8(bytes)?.trim_ascii_end())
                 },
-                Cow::Owned(_) => unreachable!(),
+                Cow::Owned(vec) => {
+                    let mut result = String::from_utf8_lossy(&vec).into_owned();
+                    result.truncate(result.trim_ascii_end().len());
+                    Cow::Owned(result)
+                },
             })
         }
 

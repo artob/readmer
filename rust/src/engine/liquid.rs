@@ -8,7 +8,7 @@ use alloc::{
 };
 use liquid::{
     Template,
-    partials::{EagerCompiler, InMemorySource},
+    partials::{EagerCompiler, InMemorySource, PartialSource},
     reflection::ParserReflection,
 };
 
@@ -40,9 +40,12 @@ impl Engine for LiquidEngine {
     }
 
     fn render(&mut self, name: String, context: Box<dyn Context>) -> Result<String, RenderError> {
+        let mut partials = stack::StackPartials::empty();
+        partials.add(embed::EmbedSource::default());
+        partials.add(file::FileSource::default());
         let template_data = self.0.get(&name).ok_or(RenderError::NotFound)?;
         let template = liquid::ParserBuilder::with_stdlib()
-            .partials(embed::EmbedPartials::empty())
+            .partials(partials)
             .build()?
             .parse(template_data)?;
         let context = liquid::to_object(&context.to_json())?;
@@ -56,3 +59,6 @@ pub use embed::*;
 
 mod file;
 pub use file::*;
+
+mod stack;
+pub use stack::*;

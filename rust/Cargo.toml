@@ -48,6 +48,7 @@ dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
 dyn-clone = { version = "1.0", default-features = false }
 figment2 = { version = "0.11", default-features = false, features = ["env", "yaml"] }
 rust-embed = { version = "8.12", default-features = false, features = ["deterministic-timestamps"] }
+send_wrapper = { version = "0.6", default-features = false }
 serde = { version = "1", default-features = false, features = ["derive"] }
 serde_json = { version = "1.0", default-features = false, features = ["preserve_order"] }
 thiserror = { version = "2", default-features = false }
