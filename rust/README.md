@@ -35,7 +35,7 @@
 
 ## 🛠️ Prerequisites
 
-- [Rust] 1.85+ (2024 edition)
+- [Rust] 1.87+ (2024 edition)
 
 ## ⬇️ Installation
 
@@ -87,7 +87,7 @@ use readmer::*;
 
 ### Command-Line Interface
 
-```console
+```shellsession
 $ readmer
 Readmer composes README.md files from Jinja2 or Liquid templates
 
@@ -109,7 +109,7 @@ Options:
 
 #### `readmer describe`
 
-```console
+```shellsession
 $ readmer describe --help
 Describe the current project's metadata in JSON format
 
@@ -120,17 +120,18 @@ Arguments:
   [PROPERTY]  The project property to output [default: all properties]
 
 Options:
-      --color <COLOR>     Set the color output mode [default: auto] [possible values: auto, always, never]
-  -o, --output <OUTPUT>   The output format to use [default: json]
-  -d, --debug             Enable debugging output
-  -D, --define <DEFINES>  Define a variable and value to pass to the templating engine
-  -v, --verbose...        Enable verbose output (may be repeated for more verbosity)
-  -h, --help              Print help
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
+  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+  -d, --debug                  Enable debugging output
+  -o, --output <OUTPUT>        The output format to use [default: json]
+  -D, --define <DEFINES>       Define a variable and value to pass to the templating engine
+  -v, --verbose...             Enable verbose output (may be repeated for more verbosity)
+  -h, --help                   Print help
 ```
 
 #### `readmer render`
 
-```console
+```shellsession
 $ readmer render --help
 Render a template file to standard output
 
@@ -168,4 +169,4 @@ git clone https://github.com/artob/readmer.git
 
 [Linguist]: https://github.com/github-linguist/linguist
 [Rust]: https://rust-lang.org
-[`readmer`]: #command-line-interface
+[`readmer`]: https://github.com/artob/readmer/tree/master/rust#command-line-interface
