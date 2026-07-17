@@ -1,4 +1,4 @@
-# Readmer
+# Readmer: READMEs Made Simple<sup>™</sup>
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
 [![Package on Crates.io](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
@@ -17,7 +17,6 @@
 - Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
 - Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
 - Supports syntax highlighting for all file types recognized by [Linguist].
-- Supports opting out of any feature using comprehensive [feature flags].
 - Polyglot software available for Dart, Python, Ruby, Rust, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
@@ -33,11 +32,18 @@ cargo install readmer --locked --features=cli
 
 ### Installation of the Library
 
+<details>
+<summary>Installation for Rust from Crates.io</summary>
+
 #### Installation from [Crates.io]
 
 ```bash
 cargo add --dev readmer
 ```
+</details>
+
+<details>
+<summary>Installation for JavaScript/TypeScript from NPM</summary>
 
 #### Installation from [NPM]
 
@@ -47,6 +53,10 @@ bun add --dev readmer.js
 pnpm add --save-dev readmer.js
 yarn add --dev readmer.js
 ```
+</details>
+
+<details>
+<summary>Installation for Dart from Pub.dev</summary>
 
 #### Installation from [Pub.dev]
 
@@ -54,6 +64,10 @@ yarn add --dev readmer.js
 dart pub add dev:readmer
 flutter pub add dev:readmer
 ```
+</details>
+
+<details>
+<summary>Installation for Python from PyPI</summary>
 
 #### Installation from [PyPI]
 
@@ -63,12 +77,92 @@ uv add --dev readmer
 poetry add --group dev readmer
 pdm add -d readmer
 ```
+</details>
+
+<details>
+<summary>Installation for Ruby from RubyGems</summary>
 
 #### Installation from [RubyGems]
 
 ```bash
 gem install readmer
 bundle add readmer --group development
+```
+</details>
+
+## 👉 Examples
+
+### Building the `README.md` File
+
+```bash
+readmer render > README.md
+```
+
+## 📚 Reference
+
+### Command-Line Interface
+
+```shellsession
+$ readmer
+Readmer composes README.md files from Jinja2 or Liquid templates
+
+Usage: readmer [OPTIONS] [COMMAND]
+
+Commands:
+  describe  Describe the current project's metadata in JSON format
+  render    Render a template file to standard output
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+      --color <COLOR>  Set the color output mode [default: auto] [possible values: auto, always, never]
+  -d, --debug          Enable debugging output
+      --license        Show license information
+  -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
+  -V, --version        Print version information
+  -h, --help           Print help (see more with '--help')
+```
+
+#### `readmer describe`
+
+```shellsession
+$ readmer describe --help
+Describe the current project's metadata in JSON format
+
+Usage: readmer describe [OPTIONS] [PROJECT] [PROPERTY]
+
+Arguments:
+  [PROJECT]   The project directory to use [default: $PWD]
+  [PROPERTY]  The project property to output [default: all properties]
+
+Options:
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
+  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+  -d, --debug                  Enable debugging output
+  -o, --output <OUTPUT>        The output format to use [default: json]
+  -D, --define <DEFINES>       Define a variable and value to pass to the templating engine
+  -v, --verbose...             Enable verbose output (may be repeated for more verbosity)
+  -h, --help                   Print help
+```
+
+#### `readmer render`
+
+```shellsession
+$ readmer render --help
+Render a template file to standard output
+
+Usage: readmer render [OPTIONS] [INPUTS]...
+
+Arguments:
+  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid]
+
+Options:
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
+  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+  -d, --debug                  Enable debugging output
+  -e, --engine <ENGINE>        The templating engine to use [default: auto]
+  -D, --define <DEFINES>       Define a variable and value to pass to the templating engine
+  -v, --verbose...             Enable verbose output (may be repeated for more verbosity)
+  -h, --help                   Print help
 ```
 
 ## 👨‍💻 Development
@@ -79,17 +173,19 @@ git clone https://github.com/artob/readmer.git
 
 ---
 
-[![Share on X](https://img.shields.io/badge/share%20on-x-03A9F4?logo=x)](https://x.com/intent/post?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&text=Readmer)
-[![Share on Reddit](https://img.shields.io/badge/share%20on-reddit-red?logo=reddit)](https://reddit.com/submit?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&title=Readmer)
-[![Share on Hacker News](https://img.shields.io/badge/share%20on-hn-orange?logo=ycombinator)](https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&t=Readmer)
+[![Share on X](https://img.shields.io/badge/share%20on-x-03A9F4?logo=x)](https://x.com/intent/post?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&text=Readmer%3A%20READMEs%20Made%20Simple)
+[![Share on Reddit](https://img.shields.io/badge/share%20on-reddit-red?logo=reddit)](https://reddit.com/submit?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&title=Readmer%3A%20READMEs%20Made%20Simple)
+[![Share on Hacker News](https://img.shields.io/badge/share%20on-hn-orange?logo=ycombinator)](https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&t=Readmer%3A%20READMEs%20Made%20Simple)
 [![Share on Facebook](https://img.shields.io/badge/share%20on-fb-1976D2?logo=facebook)](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 [![Share on LinkedIn](https://img.shields.io/badge/share%20on-linkedin-3949AB?logo=linkedin)](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 
-[Cargo]: https://rustup.rs
 [Crates.io]: https://crates.io/crates/readmer
 [NPM]: https://npmjs.com/package/readmer.js
 [Pub.dev]: https://pub.dev/packages/readmer
 [PyPI]: https://pypi.org/project/readmer
 [RubyGems]: https://rubygems.org/gems/readmer
 
-[`readmer`]: https://github.com/artob/readmer/tree/master/rust#command-line-interface
+[Cargo]: https://rustup.rs
+[Linguist]: https://github.com/github-linguist/linguist
+
+[`readmer`]: https://github.com/artob/readmer#command-line-interface

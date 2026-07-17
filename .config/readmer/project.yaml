@@ -1,5 +1,5 @@
 ---
 label: Readmer
-title: Readmer
+title: "Readmer: READMEs Made Simple"
 summary:
   Readmer composes `README.md` files from Liquid or Jinja2 templates.

@@ -1,4 +1,4 @@
-# {{ project.title }}
+# {{ project.title }}<sup>™</sup>
 
 {% render 'badge/unlicense' %}
 [![Package on Crates.io](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
@@ -19,7 +19,6 @@
 - Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
 {% endraw -%}
 - Supports syntax highlighting for all file types recognized by [Linguist].
-- Supports opting out of any feature using comprehensive [feature flags].
 - Polyglot software available for Dart, Python, Ruby, Rust, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
@@ -35,11 +34,18 @@ cargo install readmer --locked --features=cli
 
 ### Installation of the Library
 
+<details>
+<summary>Installation for Rust from Crates.io</summary>
+
 #### Installation from [Crates.io]
 
 ```bash
 cargo add --dev readmer
 ```
+</details>
+
+<details>
+<summary>Installation for JavaScript/TypeScript from NPM</summary>
 
 #### Installation from [NPM]
 
@@ -49,6 +55,10 @@ bun add --dev readmer.js
 pnpm add --save-dev readmer.js
 yarn add --dev readmer.js
 ```
+</details>
+
+<details>
+<summary>Installation for Dart from Pub.dev</summary>
 
 #### Installation from [Pub.dev]
 
@@ -56,6 +66,10 @@ yarn add --dev readmer.js
 dart pub add dev:readmer
 flutter pub add dev:readmer
 ```
+</details>
+
+<details>
+<summary>Installation for Python from PyPI</summary>
 
 #### Installation from [PyPI]
 
@@ -65,6 +79,10 @@ uv add --dev readmer
 poetry add --group dev readmer
 pdm add -d readmer
 ```
+</details>
+
+<details>
+<summary>Installation for Ruby from RubyGems</summary>
 
 #### Installation from [RubyGems]
 
@@ -72,6 +90,29 @@ pdm add -d readmer
 gem install readmer
 bundle add readmer --group development
 ```
+</details>
+
+## 👉 Examples
+
+### Building the `README.md` File
+
+```bash
+readmer render > README.md
+```
+
+## 📚 Reference
+
+### Command-Line Interface
+
+{% render '.config/readmer/readmer.sh-session' %}
+
+#### `readmer describe`
+
+{% render '.config/readmer/readmer-describe.sh-session' %}
+
+#### `readmer render`
+
+{% render '.config/readmer/readmer-render.sh-session' %}
 
 ## 👨‍💻 Development
 
@@ -83,11 +124,13 @@ git clone https://github.com/artob/readmer.git
 
 {% render 'footer/share', title: project.title, url: 'https://github.com/artob/readmer' %}
 
-[Cargo]: https://rustup.rs
 [Crates.io]: https://crates.io/crates/readmer
 [NPM]: https://npmjs.com/package/readmer.js
 [Pub.dev]: https://pub.dev/packages/readmer
 [PyPI]: https://pypi.org/project/readmer
 [RubyGems]: https://rubygems.org/gems/readmer
 
-[`readmer`]: https://github.com/artob/readmer/tree/master/rust#command-line-interface
+[Cargo]: https://rustup.rs
+[Linguist]: https://github.com/github-linguist/linguist
+
+[`readmer`]: https://github.com/artob/readmer#command-line-interface

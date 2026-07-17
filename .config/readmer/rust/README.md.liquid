@@ -1,4 +1,4 @@
-# {{ project.title }}
+# {{ project.title }}<sup>™</sup>
 
 {% render 'header/badges/rust', package: package %}
 
@@ -57,7 +57,7 @@ Enable only specific features:
 
 ## 👉 Examples
 
-### Building the README.md File
+### Building the `README.md` File
 
 ```bash
 readmer render > README.md
@@ -95,9 +95,10 @@ git clone {{ package.repository }}.git
 
 {% render 'footer/share', title: project.title, url: package.repository %}
 
+[`readmer`]: https://github.com/artob/readmer#command-line-interface
+
 [feature flags]: https://docs.rs/crate/{{ package.name }}/latest/features
 [naming conventions]: https://rust-lang.github.io/api-guidelines/naming.html
 
 [Linguist]: https://github.com/github-linguist/linguist
 [Rust]: https://rust-lang.org
-[`readmer`]: https://github.com/artob/readmer/tree/master/rust#command-line-interface
