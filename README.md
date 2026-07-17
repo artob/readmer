@@ -165,6 +165,48 @@ Options:
   -h, --help                   Print help
 ```
 
+### Template Languages
+
+Readmer currently supports two template languages, with Liquid being the
+default as well as the more featureful implementation:
+
+- [Liquid], using [@cobalt-org]'s [liquid] engine written in Rust
+- [Jinja2], using [@mitsuhiko]'s [minijinja] engine written in Rust
+
+### Template Syntax
+
+#### Outputting Properties
+
+```liquid
+The title of this project is "{{ project.title }}"
+```
+
+#### Rendering Partials
+
+```liquid
+{% render 'badge/unlicense' %}
+```
+
+#### Rendering Code Blocks
+
+```liquid
+{% render 'example.rs' %}
+```
+
+#### Rendering JSON Data
+
+```liquid
+{% render 'data.json' %}
+```
+
+#### Rendering CSV Tables
+
+```liquid
+{% render 'table.csv' %}
+```
+
+### Template Properties
+
 ## 👨‍💻 Development
 
 ```bash
@@ -179,6 +221,8 @@ git clone https://github.com/artob/readmer.git
 [![Share on Facebook](https://img.shields.io/badge/share%20on-fb-1976D2?logo=facebook)](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 [![Share on LinkedIn](https://img.shields.io/badge/share%20on-linkedin-3949AB?logo=linkedin)](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 
+[`readmer`]: https://github.com/artob/readmer#command-line-interface
+
 [Crates.io]: https://crates.io/crates/readmer
 [NPM]: https://npmjs.com/package/readmer.js
 [Pub.dev]: https://pub.dev/packages/readmer
@@ -186,6 +230,10 @@ git clone https://github.com/artob/readmer.git
 [RubyGems]: https://rubygems.org/gems/readmer
 
 [Cargo]: https://rustup.rs
+[Jinja2]: https://jinja.palletsprojects.com
 [Linguist]: https://github.com/github-linguist/linguist
+[Liquid]: https://shopify.dev/docs/api/liquid
+[minijinja]: https://crates.io/crates/minijinja
 
-[`readmer`]: https://github.com/artob/readmer#command-line-interface
+[@cobalt-org]: https://github.com/cobalt-org
+[@mitsuhiko]: https://github.com/mitsuhiko

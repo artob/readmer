@@ -114,6 +114,58 @@ readmer render > README.md
 
 {% render '.config/readmer/readmer-render.sh-session' %}
 
+### Template Languages
+
+Readmer currently supports two template languages, with Liquid being the
+default as well as the more featureful implementation:
+
+- [Liquid], using [@cobalt-org]'s [liquid] engine written in Rust
+- [Jinja2], using [@mitsuhiko]'s [minijinja] engine written in Rust
+
+### Template Syntax
+
+#### Outputting Properties
+
+{% raw -%}
+```liquid
+The title of this project is "{{ project.title }}"
+```
+{%- endraw %}
+
+#### Rendering Partials
+
+{% raw -%}
+```liquid
+{% render 'badge/unlicense' %}
+```
+{%- endraw %}
+
+#### Rendering Code Blocks
+
+{% raw -%}
+```liquid
+{% render 'example.rs' %}
+```
+{%- endraw %}
+
+#### Rendering JSON Data
+
+{% raw -%}
+```liquid
+{% render 'data.json' %}
+```
+{%- endraw %}
+
+#### Rendering CSV Tables
+
+{% raw -%}
+```liquid
+{% render 'table.csv' %}
+```
+{%- endraw %}
+
+### Template Properties
+
 ## 👨‍💻 Development
 
 ```bash
@@ -124,6 +176,8 @@ git clone https://github.com/artob/readmer.git
 
 {% render 'footer/share', title: project.title, url: 'https://github.com/artob/readmer' %}
 
+[`readmer`]: https://github.com/artob/readmer#command-line-interface
+
 [Crates.io]: https://crates.io/crates/readmer
 [NPM]: https://npmjs.com/package/readmer.js
 [Pub.dev]: https://pub.dev/packages/readmer
@@ -131,6 +185,10 @@ git clone https://github.com/artob/readmer.git
 [RubyGems]: https://rubygems.org/gems/readmer
 
 [Cargo]: https://rustup.rs
+[Jinja2]: https://jinja.palletsprojects.com
 [Linguist]: https://github.com/github-linguist/linguist
+[Liquid]: https://shopify.dev/docs/api/liquid
+[minijinja]: https://crates.io/crates/minijinja
 
-[`readmer`]: https://github.com/artob/readmer#command-line-interface
+[@cobalt-org]: https://github.com/cobalt-org
+[@mitsuhiko]: https://github.com/mitsuhiko
