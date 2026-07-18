@@ -19,6 +19,13 @@ pub enum LoadError {
     Other(#[from] Box<dyn core::error::Error>),
 }
 
+#[cfg(feature = "js")]
+impl From<export::js::LoadPackageError> for LoadError {
+    fn from(error: export::js::LoadPackageError) -> Self {
+        LoadError::Other(error.into())
+    }
+}
+
 #[cfg(feature = "python")]
 impl From<export::python::LoadPyprojectError> for LoadError {
     fn from(error: export::python::LoadPyprojectError) -> Self {

@@ -39,7 +39,7 @@ liquid = ["dep:liquid"]
 languages = ["csv", "dart", "js", "python", "ruby", "rust"]
 csv = ["dep:csv"]
 dart = []
-js = []
+js = ["dep:package_json_schema"]
 python = ["dep:pyproject-toml", "dep:toml0"]
 ruby = ["dep:serde_norway", "dep:serde_with"]
 rust = ["dep:cargo_toml", "dep:toml1"]
@@ -66,6 +66,7 @@ minijinja = { version = "2.21", default-features = false, features = ["json", "s
 # Languages:
 cargo_toml = { version = "1.0", default-features = false, optional = true }
 csv = { version = "1.4", default-features = false, optional = true }
+package_json_schema = { version = "0.3", default-features = false, optional = true }
 pyproject-toml = { version = "0.13", default-features = false, optional = true }
 #rubyrs = { version = "0.2", default-features = false, optional = true }
 serde_norway = { version = "0.9", default-features = false, optional = true }

@@ -474,6 +474,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "doc-comment"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "780955b8b195a21ab8e4ac6b60dd1dbdcec1dc6c51c0617964b08c81785e12c9"
+
+[[package]]
 name = "dogma"
 version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1143,6 +1149,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "package_json_schema"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64dd3d4f4077fc37ea51e6c31d5e342af4268d0da38ee9bb8f7edcd10011f900"
+dependencies = [
+ "cfg-if",
+ "doc-comment",
+ "indexmap 2.14.0",
+ "lazy_static",
+ "regex",
+ "semver",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "typed-builder",
+]
+
+[[package]]
 name = "pep440_rs"
 version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1294,6 +1318,7 @@ dependencies = [
  "linguist",
  "liquid",
  "minijinja",
+ "package_json_schema",
  "pyproject-toml",
  "rust-embed",
  "send_wrapper",
@@ -1918,6 +1943,26 @@ dependencies = [
  "thread_local",
  "tracing",
  "tracing-core",
+]
+
+[[package]]
+name = "typed-builder"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd9d30e3a08026c78f246b173243cf07b3696d274debd26680773b6773c2afc7"
+dependencies = [
+ "typed-builder-macro",
+]
+
+[[package]]
+name = "typed-builder-macro"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3c36781cc0e46a83726d9879608e4cf6c2505237e263a8eb8c24502989cfdb28"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

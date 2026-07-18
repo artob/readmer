@@ -20,6 +20,9 @@ pub struct Package {
     /// The package name.
     pub name: String,
 
+    /// The package version.
+    pub version: String,
+
     /// The package authors.
     pub authors: Vec<String>,
 
@@ -51,6 +54,8 @@ impl Package {
         for file_name in [
             #[cfg(feature = "rust")]
             "Cargo.toml",
+            #[cfg(feature = "js")]
+            "package.json",
             #[cfg(feature = "python")]
             "pyproject.toml",
             #[cfg(feature = "ruby")]
@@ -70,8 +75,11 @@ impl Package {
             #[cfg(feature = "rust")]
             Some("Cargo.toml") => export::rust::load_cargo_toml(file_path)?.try_into()?,
 
+            #[cfg(feature = "js")]
+            Some("package.json") => export::js::load_package_json(file_path)?.try_into()?,
+
             #[cfg(feature = "python")]
-            Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.into(),
+            Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.try_into()?,
 
             #[cfg(feature = "ruby")]
             Some("readmer.gemspec.yaml") => export::ruby::load_gemspec(file_path)?.try_into()?, // FIXME
@@ -90,6 +98,7 @@ impl Package {
     pub fn into_json(self) -> serde_json::Value {
         serde_json::json!({
             "name": self.name,
+            "version": self.version,
             "authors": self.authors,
             "description": self.description,
             "homepage": self.homepage,
@@ -103,14 +112,48 @@ impl Package {
     }
 }
 
+#[cfg(feature = "ruby")]
+impl TryFrom<export::js::PackageJson> for Package {
+    type Error = export::js::LoadPackageError;
+
+    fn try_from(input: export::js::PackageJson) -> Result<Self, Self::Error> {
+        //let input_metadata = input.metadata.unwrap_or_default();
+
+        use package_json_schema::{Person, PersonObject};
+        Ok(Self {
+            name: input.name.unwrap_or_default(),
+            version: input.version.unwrap_or_default(),
+            authors: input
+                .author
+                .into_iter()
+                .map(|person| match person {
+                    Person::String(name) => name,
+                    Person::Object(person) => person.name,
+                })
+                .collect(),
+            description: input.description,
+            homepage: input.homepage,
+            keywords: input.keywords.unwrap_or_default(),
+            categories: vec![],
+            licenses: input.license.into_iter().collect(),
+            repository: None,
+            // metadata: Some(serde_json::Value::Object(input_metadata.other)),
+            ..Default::default()
+        })
+    }
+}
+
 #[cfg(feature = "python")]
-impl From<export::python::PyprojectToml> for Package {
-    fn from(input: export::python::PyprojectToml) -> Self {
+impl TryFrom<export::python::PyprojectToml> for Package {
+    type Error = export::python::LoadPyprojectError;
+
+    fn try_from(input: export::python::PyprojectToml) -> Result<Self, Self::Error> {
         use export::python::{Contact, License};
         let project = input.project.unwrap();
         let project_urls = project.urls.unwrap_or_default();
-        Self {
+        Ok(Self {
             name: project.name.to_string(),
+            version: project.version.map(|v| v.to_string()).unwrap_or_default(),
             authors: project
                 .authors
                 .unwrap_or_default()
@@ -128,7 +171,7 @@ impl From<export::python::PyprojectToml> for Package {
             },
             repository: project_urls.get("Repository").cloned(),
             metadata: None, // TODO
-        }
+        })
     }
 }
 
@@ -140,6 +183,7 @@ impl TryFrom<export::ruby::Specification> for Package {
         let input_metadata = input.metadata.unwrap_or_default();
         Ok(Self {
             name: input.name,
+            version: input.version.version,
             authors: input.authors,
             description: input.description,
             homepage: input.homepage,
@@ -163,6 +207,7 @@ impl TryFrom<export::rust::Manifest> for Package {
         let package = input.package.unwrap();
         Ok(Self {
             name: package.name,
+            version: package.version.unwrap().to_string(),
             authors: package.authors.unwrap(),
             description: package.description.map(|x| x.unwrap()),
             homepage: package.homepage.map(|x| x.unwrap()),
