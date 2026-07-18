@@ -26,6 +26,13 @@ impl From<export::python::LoadPyprojectError> for LoadError {
     }
 }
 
+#[cfg(feature = "ruby")]
+impl From<export::ruby::LoadGemspecError> for LoadError {
+    fn from(error: export::ruby::LoadGemspecError) -> Self {
+        LoadError::Other(error.into())
+    }
+}
+
 #[cfg(feature = "rust")]
 impl From<export::rust::LoadManifestError> for LoadError {
     fn from(error: export::rust::LoadManifestError) -> Self {

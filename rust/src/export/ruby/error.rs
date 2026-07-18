@@ -18,3 +18,9 @@ impl From<std::io::Error> for LoadGemspecError {
         Self::Other(error.into())
     }
 }
+
+impl From<serde_norway::Error> for LoadGemspecError {
+    fn from(error: serde_norway::Error) -> Self {
+        Self::Other(error.into())
+    }
+}

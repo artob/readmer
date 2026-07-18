@@ -25,9 +25,9 @@ summary = "Readmer composes `README.md` files from Liquid or Jinja2 templates."
 [features]
 default = ["all", "std"]
 all = ["engines", "languages"]
-alloc = ["dogma/alloc"]
+alloc = ["dogma/alloc", "serde_json/alloc", "serde_with?/alloc"]
 cli = ["std", "dep:clap", "dep:tracing-subscriber", "clientele/default", "clientele/tracing"]
-std = ["alloc", "derive_more/std", "dogma/std", "liquid?/stdlib", "minijinja?/std_collections"]
+std = ["alloc", "derive_more/std", "dogma/std", "liquid?/stdlib", "minijinja?/std_collections", "serde_with?/std"]
 unstable = []
 
 # Engines:
@@ -41,7 +41,7 @@ csv = ["dep:csv"]
 dart = []
 js = []
 python = ["dep:pyproject-toml", "dep:toml0"]
-ruby = []
+ruby = ["dep:serde_norway", "dep:serde_with"]
 rust = ["dep:cargo_toml", "dep:toml1"]
 
 [dependencies]
@@ -67,6 +67,9 @@ minijinja = { version = "2.21", default-features = false, features = ["json", "s
 cargo_toml = { version = "1.0", default-features = false, optional = true }
 csv = { version = "1.4", default-features = false, optional = true }
 pyproject-toml = { version = "0.13", default-features = false, optional = true }
+#rubyrs = { version = "0.2", default-features = false, optional = true }
+serde_norway = { version = "0.9", default-features = false, optional = true }
+serde_with = { version = "3.21", default-features = false, features = ["macros"], optional = true }
 toml0 = { package = "toml", version = "0.9", default-features = false, optional = true }
 toml1 = { package = "toml", version = "1.0", default-features = false, optional = true }
 

@@ -30,6 +30,8 @@ pub mod ruby {
     pub use error::*;
     mod gemspec;
     pub use gemspec::*;
+    mod specification;
+    pub use specification::*;
 }
 
 #[cfg(feature = "rust")]

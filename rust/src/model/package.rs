@@ -5,6 +5,7 @@ use crate::{Utf8Path, export};
 use alloc::{
     format,
     string::{String, ToString},
+    vec,
     vec::Vec,
 };
 use figment2::{
@@ -35,7 +36,7 @@ pub struct Package {
     pub categories: Vec<String>,
 
     /// The package license.
-    pub license: Option<String>,
+    pub licenses: Vec<String>,
 
     /// The package repository.
     pub repository: Option<String>,
@@ -52,6 +53,8 @@ impl Package {
             "Cargo.toml",
             #[cfg(feature = "python")]
             "pyproject.toml",
+            #[cfg(feature = "ruby")]
+            "readmer.gemspec.yaml", // FIXME
         ] {
             let file_path = dir_path.join(file_name);
             if file_path.exists() {
@@ -64,11 +67,14 @@ impl Package {
     pub fn load(file_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let file_path = file_path.as_ref();
         Ok(match file_path.file_name() {
+            #[cfg(feature = "rust")]
+            Some("Cargo.toml") => export::rust::load_cargo_toml(file_path)?.try_into()?,
+
             #[cfg(feature = "python")]
             Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.into(),
 
-            #[cfg(feature = "rust")]
-            Some("Cargo.toml") => export::rust::load_cargo_toml(file_path)?.try_into()?,
+            #[cfg(feature = "ruby")]
+            Some("readmer.gemspec.yaml") => export::ruby::load_gemspec(file_path)?.try_into()?, // FIXME
 
             // TODO: Dart, JS, Ruby
             _ => {
@@ -89,7 +95,8 @@ impl Package {
             "homepage": self.homepage,
             "keywords": self.keywords,
             "categories": self.categories,
-            "license": self.license,
+            "license": self.licenses.first(),
+            "licenses": self.licenses,
             "repository": self.repository,
             "metadata": self.metadata,
         })
@@ -115,13 +122,33 @@ impl From<export::python::PyprojectToml> for Package {
             homepage: project_urls.get("Homepage").cloned(),
             keywords: project.keywords.unwrap_or_default(),
             categories: project.classifiers.unwrap_or_default(),
-            license: match project.license {
-                Some(License::Spdx(s)) => Some(s),
-                _ => None,
+            licenses: match project.license {
+                Some(License::Spdx(s)) => vec![s],
+                _ => vec![],
             },
             repository: project_urls.get("Repository").cloned(),
             metadata: None, // TODO
         }
+    }
+}
+
+#[cfg(feature = "ruby")]
+impl TryFrom<export::ruby::Specification> for Package {
+    type Error = export::ruby::LoadGemspecError;
+
+    fn try_from(input: export::ruby::Specification) -> Result<Self, Self::Error> {
+        let input_metadata = input.metadata.unwrap_or_default();
+        Ok(Self {
+            name: input.name,
+            authors: input.authors,
+            description: input.description,
+            homepage: input.homepage,
+            keywords: vec![],
+            categories: vec![],
+            licenses: input.licenses,
+            repository: input_metadata.source_code_uri,
+            metadata: Some(serde_json::Value::Object(input_metadata.other)),
+        })
     }
 }
 
@@ -141,7 +168,10 @@ impl TryFrom<export::rust::Manifest> for Package {
             homepage: package.homepage.map(|x| x.unwrap()),
             keywords: package.keywords.unwrap(),
             categories: package.categories.unwrap(),
-            license: package.license.map(|x| x.unwrap()),
+            licenses: match package.license {
+                None => vec![],
+                Some(x) => vec![x.unwrap()],
+            },
             repository: package.repository.map(|x| x.unwrap()),
             metadata: package.metadata.map(|x| x.try_into()).transpose()?,
         })
