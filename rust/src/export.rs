@@ -4,6 +4,8 @@
 pub mod dart {
     mod error;
     pub use error::*;
+    mod load;
+    pub use load::*;
     mod pubspec;
     pub use pubspec::*;
 }
@@ -12,6 +14,8 @@ pub mod dart {
 pub mod js {
     mod error;
     pub use error::*;
+    mod load;
+    pub use load::*;
     mod package;
     pub use package::*;
 }
@@ -20,6 +24,8 @@ pub mod js {
 pub mod python {
     mod error;
     pub use error::*;
+    mod load;
+    pub use load::*;
     mod pyproject;
     pub use pyproject::*;
 }
@@ -30,6 +36,8 @@ pub mod ruby {
     pub use error::*;
     mod gemspec;
     pub use gemspec::*;
+    mod load;
+    pub use load::*;
     mod specification;
     pub use specification::*;
 }
@@ -38,6 +46,8 @@ pub mod ruby {
 pub mod rust {
     mod error;
     pub use error::*;
+    mod load;
+    pub use load::*;
     mod manifest;
     pub use manifest::*;
 }
