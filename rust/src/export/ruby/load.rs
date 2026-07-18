@@ -1,5 +1,7 @@
 // This is free and unencumbered software released into the public domain.
 
+use std::eprintln;
+
 use super::{Gemspec, LoadGemspecError};
 use crate::Utf8Path;
 

@@ -19,6 +19,13 @@ pub enum LoadError {
     Other(#[from] Box<dyn core::error::Error>),
 }
 
+#[cfg(feature = "dart")]
+impl From<export::dart::LoadPubspecError> for LoadError {
+    fn from(error: export::dart::LoadPubspecError) -> Self {
+        LoadError::Other(error.into())
+    }
+}
+
 #[cfg(feature = "js")]
 impl From<export::js::LoadPackageError> for LoadError {
     fn from(error: export::js::LoadPackageError) -> Self {

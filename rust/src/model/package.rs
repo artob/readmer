@@ -56,6 +56,8 @@ impl Package {
             "Cargo.toml",
             #[cfg(feature = "js")]
             "package.json",
+            #[cfg(feature = "dart")]
+            "pubspec.yaml",
             #[cfg(feature = "python")]
             "pyproject.toml",
             #[cfg(feature = "ruby")]
@@ -78,6 +80,9 @@ impl Package {
             #[cfg(feature = "js")]
             Some("package.json") => export::js::load_package_json(file_path)?.try_into()?,
 
+            #[cfg(feature = "dart")]
+            Some("pubspec.yaml") => export::dart::load_pubspec(file_path)?.try_into()?,
+
             #[cfg(feature = "python")]
             Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.try_into()?,
 
@@ -96,9 +101,11 @@ impl Package {
     }
 
     pub fn into_json(self) -> serde_json::Value {
+        // Make sure to keep this in sync with `package.csv`!
         serde_json::json!({
             "name": self.name,
             "version": self.version,
+            "author": &self.authors.first(),
             "authors": self.authors,
             "description": self.description,
             "homepage": self.homepage,
@@ -112,13 +119,31 @@ impl Package {
     }
 }
 
-#[cfg(feature = "ruby")]
+#[cfg(feature = "dart")]
+impl TryFrom<export::dart::Pubspec> for Package {
+    type Error = export::dart::LoadPubspecError;
+
+    fn try_from(input: export::dart::Pubspec) -> Result<Self, Self::Error> {
+        Ok(Self {
+            name: input.name,
+            version: input.version.unwrap_or_default(),
+            authors: vec![], // deprecated since Dart 2.7
+            description: input.description,
+            homepage: input.homepage,
+            keywords: input.topics.unwrap_or_default(),
+            categories: vec![],
+            licenses: vec![], // TODO: detect from `LICENSE` file
+            repository: input.repository,
+            metadata: None, // TODO
+        })
+    }
+}
+
+#[cfg(feature = "js")]
 impl TryFrom<export::js::PackageJson> for Package {
     type Error = export::js::LoadPackageError;
 
     fn try_from(input: export::js::PackageJson) -> Result<Self, Self::Error> {
-        //let input_metadata = input.metadata.unwrap_or_default();
-
         use package_json_schema::{Person, PersonObject};
         Ok(Self {
             name: input.name.unwrap_or_default(),
