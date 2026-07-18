@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::Utf8PathBuf;
+use crate::{Utf8PathBuf, export};
 use alloc::{
     boxed::Box,
     string::{String, ToString},
@@ -19,9 +19,16 @@ pub enum LoadError {
     Other(#[from] Box<dyn core::error::Error>),
 }
 
+#[cfg(feature = "python")]
+impl From<export::python::LoadPyprojectError> for LoadError {
+    fn from(error: export::python::LoadPyprojectError) -> Self {
+        LoadError::Other(error.into())
+    }
+}
+
 #[cfg(feature = "rust")]
-impl From<cargo_toml::Error> for LoadError {
-    fn from(error: cargo_toml::Error) -> Self {
-        LoadError::Other(Box::new(error))
+impl From<export::rust::LoadManifestError> for LoadError {
+    fn from(error: export::rust::LoadManifestError) -> Self {
+        LoadError::Other(error.into())
     }
 }

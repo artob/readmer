@@ -1,7 +1,7 @@
 // This is free and unencumbered software released into the public domain.
 
 use super::LoadError;
-use crate::Utf8Path;
+use crate::{Utf8Path, export};
 use alloc::{
     format,
     string::{String, ToString},
@@ -65,13 +65,11 @@ impl Package {
         let file_path = file_path.as_ref();
         Ok(match file_path.file_name() {
             #[cfg(feature = "python")]
-            Some("pyproject.toml") => {
-                let input = std::fs::read_to_string(file_path).unwrap();
-                let pyproject = pyproject_toml::PyProjectToml::new(&input).unwrap();
-                pyproject.into()
-            },
+            Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.into(),
+
             #[cfg(feature = "rust")]
-            Some("Cargo.toml") => cargo_toml::Manifest::from_path(file_path)?.try_into()?,
+            Some("Cargo.toml") => export::rust::load_cargo_toml(file_path)?.try_into()?,
+
             // TODO: Dart, JS, Ruby
             _ => {
                 return Err(LoadError::UnknownPackageFormat(file_path.into()));
@@ -99,9 +97,9 @@ impl Package {
 }
 
 #[cfg(feature = "python")]
-impl From<pyproject_toml::PyProjectToml> for Package {
-    fn from(input: pyproject_toml::PyProjectToml) -> Self {
-        use pyproject_toml::{Contact, License};
+impl From<export::python::PyprojectToml> for Package {
+    fn from(input: export::python::PyprojectToml) -> Self {
+        use export::python::{Contact, License};
         let project = input.project.unwrap();
         let project_urls = project.urls.unwrap_or_default();
         Self {
@@ -128,11 +126,11 @@ impl From<pyproject_toml::PyProjectToml> for Package {
 }
 
 #[cfg(feature = "rust")]
-impl TryFrom<cargo_toml::Manifest> for Package {
-    type Error = cargo_toml::Error;
+impl TryFrom<export::rust::Manifest> for Package {
+    type Error = export::rust::LoadManifestError;
 
-    fn try_from(input: cargo_toml::Manifest) -> Result<Self, Self::Error> {
-        use cargo_toml::Value;
+    fn try_from(input: export::rust::Manifest) -> Result<Self, Self::Error> {
+        use export::rust::Value;
 
         assert!(!input.needs_workspace_inheritance());
         let package = input.package.unwrap();

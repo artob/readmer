@@ -40,9 +40,9 @@ languages = ["csv", "dart", "js", "python", "ruby", "rust"]
 csv = ["dep:csv"]
 dart = []
 js = []
-python = ["dep:pyproject-toml"]
+python = ["dep:pyproject-toml", "dep:toml0"]
 ruby = []
-rust = ["dep:cargo_toml"]
+rust = ["dep:cargo_toml", "dep:toml1"]
 
 [dependencies]
 camino = { version = "1.2", default-features = false }
@@ -67,6 +67,8 @@ minijinja = { version = "2.21", default-features = false, features = ["json", "s
 cargo_toml = { version = "1.0", default-features = false, optional = true }
 csv = { version = "1.4", default-features = false, optional = true }
 pyproject-toml = { version = "0.13", default-features = false, optional = true }
+toml0 = { package = "toml", version = "0.9", default-features = false, optional = true }
+toml1 = { package = "toml", version = "1.0", default-features = false, optional = true }
 
 # CLI:
 clap = { version = "4.5", default-features = false, optional = true }

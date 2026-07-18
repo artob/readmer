@@ -18,13 +18,13 @@ pub enum RenderError {
 #[cfg(feature = "liquid")]
 impl From<liquid::Error> for RenderError {
     fn from(error: liquid::Error) -> Self {
-        RenderError::Other(Box::new(error))
+        Self::Other(Box::new(error))
     }
 }
 
 #[cfg(feature = "jinja2")]
 impl From<minijinja::Error> for RenderError {
     fn from(error: minijinja::Error) -> Self {
-        RenderError::Other(Box::new(error))
+        Self::Other(Box::new(error))
     }
 }
