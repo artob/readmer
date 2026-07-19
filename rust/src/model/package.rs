@@ -61,7 +61,7 @@ impl Package {
             #[cfg(feature = "python")]
             "pyproject.toml",
             #[cfg(feature = "ruby")]
-            "readmer.gemspec.yaml", // FIXME
+            ".gemspec.yaml", // TODO
         ] {
             let file_path = dir_path.join(file_name);
             if file_path.exists() {
@@ -74,6 +74,9 @@ impl Package {
     pub fn load(file_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let file_path = file_path.as_ref();
         Ok(match file_path.file_name() {
+            #[cfg(feature = "ruby")]
+            Some(".gemspec.yaml") => export::ruby::load_gemspec(file_path)?.try_into()?, // TODO
+
             #[cfg(feature = "rust")]
             Some("Cargo.toml") => export::rust::load_cargo_toml(file_path)?.try_into()?,
 
@@ -86,10 +89,6 @@ impl Package {
             #[cfg(feature = "python")]
             Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.try_into()?,
 
-            #[cfg(feature = "ruby")]
-            Some("readmer.gemspec.yaml") => export::ruby::load_gemspec(file_path)?.try_into()?, // FIXME
-
-            // TODO: Dart, JS, Ruby
             _ => {
                 return Err(LoadError::UnknownPackageFormat(file_path.into()));
             },

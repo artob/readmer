@@ -1,6 +1,12 @@
+GEM = gem
 READMER = readmer
 
 all: README.md
+
+.gemspec.yaml: readmer.gemspec
+	$(GEM) build -o $@.gem $<
+	$(GEM) spec $@.gem > $@
+	@rm -f $@.gem
 
 README.md: ../.config/readmer/ruby/README.md.liquid
 	$(READMER) render $< > $@
