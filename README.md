@@ -205,9 +205,9 @@ The title of this project is "{{ project.title }}"
 {% render 'table.csv' %}
 ```
 
-### Template Properties
+### Template Variables
 
-| Property | Type | Sample |
+| Variable | Type | Sample |
 | -------- | ---- | ------ |
 | `{{ project.label }}` | string | `"Readmer"` |
 | `{{ project.title }}` | string | `"Readmer: READMEs Made Simple"` |
@@ -220,6 +220,24 @@ The title of this project is "{{ project.title }}"
 | `{{ github.repository.slug }}` | string | `"artob/readmer"` |
 | `{{ github.repository.link }}` | string | `"https://github.com/artob/readmer"` |
 | `{{ github.repository.url }}` | string | `"https://github.com/artob/readmer.git"` |
+| `{{ package.* }}` | any | See package properties |
+
+### Package Properties
+
+| Property | Type | Rust | Dart | JS/TS | Python | Ruby |
+| -------- | ---- | ---- | ---- | ----- | ------ | ---- |
+| `package.name` | `string` | `name` | `name` | `name` | `name` | `name` |
+| `package.version` | `string` | `version` | `version` | `version` | `version` | `version` |
+| `package.author` | `string` | `authors[0]` | N/A | `author` | `authors` | `authors[0]` |
+| `package.authors` | `[string]` | `authors` | N/A | `[author]` | `authors` | `authors` |
+| `package.description` | `string` | `description` | `description` | `description` | `description` | `description` |
+| `package.homepage` | `string` | `homepage` | `homepage` | `project.urls.Homepage` | `homepage` | `homepage` |
+| `package.keywords` | `[string]` | `keywords` | `topics` | `keywords` | `keywords` | N/A |
+| `package.categories` | `[string]` | `categories` | N/A | N/A | `classifiers` | N/A |
+| `package.license` | `string` | `license` | TODO | `license` | `license` | `licenses[0]` |
+| `package.licenses` | `[string]` | `[license]` | TODO | `[license]` | `[license]` | `licenses` |
+| `package.repository` | `string` | `repository` | `repository` | N/A | `project.urls.Repository` | `metadata.source_code_uri` |
+| `package.metadata` | `string` | `metadata` | TODO | TODO | TODO | `metadata` |
 
 ### Standard Partials
 

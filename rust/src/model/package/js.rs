@@ -19,11 +19,10 @@ impl TryFrom<export::js::PackageJson> for Package {
             description: input.description,
             homepage: input.homepage,
             keywords: input.keywords.unwrap_or_default(),
-            categories: vec![],
+            categories: vec![], // N/A?
             licenses: input.license.into_iter().collect(),
             repository: None,
-            // metadata: Some(serde_json::Value::Object(input_metadata.other)),
-            ..Default::default()
+            metadata: None, // TODO: Some(serde_json::Value::Object(input_metadata.other)),
         })
     }
 }

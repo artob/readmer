@@ -8,7 +8,7 @@ impl TryFrom<export::python::PyprojectToml> for Package {
         let project = input.project.unwrap();
         let project_urls = project.urls.unwrap_or_default();
         Ok(Self {
-            name: project.name.to_string(),
+            name: project.name,
             version: project.version.map(|v| v.to_string()).unwrap_or_default(),
             authors: project
                 .authors
@@ -23,7 +23,7 @@ impl TryFrom<export::python::PyprojectToml> for Package {
             categories: project.classifiers.unwrap_or_default(),
             licenses: match project.license {
                 Some(License::Spdx(s)) => vec![s],
-                _ => vec![],
+                _ => vec![], // TODO
             },
             repository: project_urls.get("Repository").cloned(),
             metadata: None, // TODO

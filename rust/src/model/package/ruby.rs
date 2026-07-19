@@ -11,8 +11,8 @@ impl TryFrom<export::ruby::Gemspec> for Package {
             authors: input.authors,
             description: input.description,
             homepage: input.homepage,
-            keywords: vec![],
-            categories: vec![],
+            keywords: vec![],   // N/A
+            categories: vec![], // N/A
             licenses: input.licenses,
             repository: input_metadata.source_code_uri,
             metadata: Some(serde_json::Value::Object(input_metadata.other)),

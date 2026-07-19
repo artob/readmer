@@ -1,4 +1,4 @@
-Property,Type,Sample
+Variable,Type,Sample
 `{{ project.label }}`,string,`"Readmer"`
 `{{ project.title }}`,string,`"Readmer: READMEs Made Simple"`
 `{{ project.summary }}`,string,`"Readmer composes README.md files from templates."`
@@ -10,3 +10,4 @@ Property,Type,Sample
 `{{ github.repository.slug }}`,string,`"artob/readmer"`
 `{{ github.repository.link }}`,string,`"https://github.com/artob/readmer"`
 `{{ github.repository.url }}`,string,`"https://github.com/artob/readmer.git"`
+`{{ package.* }}`,any,See package properties

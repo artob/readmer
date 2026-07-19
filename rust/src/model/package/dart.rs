@@ -7,12 +7,12 @@ impl TryFrom<export::dart::Pubspec> for Package {
         Ok(Self {
             name: input.name,
             version: input.version.unwrap_or_default(),
-            authors: vec![], // deprecated since Dart 2.7
+            authors: vec![], // N/A: deprecated since Dart 2.7
             description: input.description,
             homepage: input.homepage,
             keywords: input.topics.unwrap_or_default(),
-            categories: vec![],
-            licenses: vec![], // TODO: detect from `LICENSE` file
+            categories: vec![], // N/A
+            licenses: vec![],   // TODO: detect from `LICENSE` file
             repository: input.repository,
             metadata: None, // TODO
         })
