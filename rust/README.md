@@ -35,7 +35,7 @@
 
 ## 🛠️ Prerequisites
 
-- [Rust] 1.87+ (2024 edition)
+- [Rust] 1.88+ (2024 edition)
 
 ## ⬇️ Installation
 
