@@ -1304,7 +1304,7 @@ dependencies = [
 
 [[package]]
 name = "readmer"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "camino",
  "cargo_toml",

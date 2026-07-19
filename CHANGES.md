@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.0.5 - 2026-07-19
+### Added
+- Parse Dart `pubspec.yaml` metadata
+- Parse NPM `package.json` metadata
+- Parse Python `pyproject.toml` metadata
+- Parse Ruby `.gemspec.yaml` metadata
+- Define `package.language`
+- Define language-specific badges
+### Changed
+- Bump MSRV to 1.88 because of dependencies
+
 ## 0.0.4 - 2026-07-17
 ### Added
 - Embed `{% render 'table.csv' %}` partials as Markdown tables
