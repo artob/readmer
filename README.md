@@ -209,24 +209,24 @@ The title of this project is "{{ project.title }}"
 
 | Variable | Type | Sample |
 | -------- | ---- | ------ |
-| `{{ project.label }}` | string | `"Readmer"` |
-| `{{ project.title }}` | string | `"Readmer: READMEs Made Simple"` |
-| `{{ project.summary }}` | string | `"Readmer composes README.md files from templates."` |
-| `{{ subproject.label }}` | string | `"Readmer.py"` |
-| `{{ subproject.title }}` | string | `"Readmer.py: Readmer for Python"` |
-| `{{ subproject.summary }}` | string | `"Readmer composes README.md files from templates."` |
-| `{{ github.account.handle }}` | string | `"artob"` |
-| `{{ github.account.link }}` | string | `"https://github.com/artob"` |
-| `{{ github.repository.slug }}` | string | `"artob/readmer"` |
-| `{{ github.repository.link }}` | string | `"https://github.com/artob/readmer"` |
-| `{{ github.repository.url }}` | string | `"https://github.com/artob/readmer.git"` |
-| `{{ package }}` | object | See [package properties](#package-properties) |
+| `{{ project.label }}` | `string` | `"Readmer"` |
+| `{{ project.title }}` | `string` | `"Readmer: READMEs Made Simple"` |
+| `{{ project.summary }}` | `string` | `"Readmer composes README.md files from templates."` |
+| `{{ subproject.label }}` | `string` | `"Readmer.py"` |
+| `{{ subproject.title }}` | `string` | `"Readmer.py: Readmer for Python"` |
+| `{{ subproject.summary }}` | `string` | `"Readmer composes README.md files from templates."` |
+| `{{ github.account.handle }}` | `string` | `"artob"` |
+| `{{ github.account.link }}` | `string` | `"https://github.com/artob"` |
+| `{{ github.repository.slug }}` | `string` | `"artob/readmer"` |
+| `{{ github.repository.link }}` | `string` | `"https://github.com/artob/readmer"` |
+| `{{ github.repository.url }}` | `string` | `"https://github.com/artob/readmer.git"` |
+| `{{ package }}` | `object` | See [package properties](#package-properties) |
+| `{{ package.language }}` | `object` | See [language properties](#language-properties) |
 
 ### Package Properties
 
 | Property | Type | Rust | Dart | JS/TS | Python | Ruby |
 | -------- | ---- | ---- | ---- | ----- | ------ | ---- |
-| `package.language` | `string` | `"rust"` | `"dart"` | `"js"` | `"python"` | `"ruby"` |
 | `package.name` | `string` | `name` | `name` | `name` | `name` | `name` |
 | `package.version` | `string` | `version` | `version` | `version` | `version` | `version` |
 | `package.author` | `string` | `authors[0]` | N/A | `author` | `authors` | `authors[0]` |
@@ -239,18 +239,35 @@ The title of this project is "{{ project.title }}"
 | `package.licenses` | `[string]` | `[license]` | TODO | `[license]` | `[license]` | `licenses` |
 | `package.repository` | `string` | `repository` | `repository` | N/A | `project.urls.Repository` | `metadata.source_code_uri` |
 | `package.metadata` | `object` | `metadata` | TODO | TODO | TODO | `metadata` |
+| `package.language` | `object` | `{...}` | `{...}` | `{...}` | `{...}` | `{...}` |
 
-### Standard Partials
+### Language Properties
+
+| Property | Type | Rust | Dart | JS/TS | Python | Ruby |
+| -------- | ---- | ---- | ---- | ----- | ------ | ---- |
+| `package.language.name` | `string` | `"rust"` | `"dart"` | `"js"` | `"python"` | `"ruby"` |
+| `package.language.label` | `string` | `"Rust"` | `"Dart"` | `"JavaScript"` | `"Python"` | `"Ruby"` |
+| `package.language.version` | `string` | `"1.88"` | `"3.11"` | `null` | `"3.14"` | `"4.0"` |
+| `package.language.minimum_version` | `string` | `"1.88"` | `"3.11"` | `null` | `"3.14"` | `"4.0"` |
+| `package.language.maximum_version` | `string` | `null` | `null` | `null` | `null` | `null` |
+
+> [!NOTE]
+> The language versions shown above are Readmer's own requirements.
+> When building your own `README.md`, Readmer will populate these properties
+> from your own project's specified language version requirements.
+
+### Builtin Partials
 
 | Partial | Summary |
 | ------- | ------- |
 | `{% render 'badge/unlicense' %}` | A 'Public Domain' badge that links to unlicense.org |
 | `{% render 'footer/share' %}` | A set of badges for sharing to X, Reddit, HN, Facebook, and LinkedIn |
 | `{% render 'header/badges/dart' %}` | Some common above-the-fold badges for Dart projects |
-| `{% render 'header/badges/js' %}` | Some common above-the-fold badges for JavaScript/TypeScript projects |
+| `{% render 'header/badges/js' %}` | Some common above-the-fold badges for JavaScript projects |
 | `{% render 'header/badges/python' %}` | Some common above-the-fold badges for Python projects |
 | `{% render 'header/badges/ruby' %}` | Some common above-the-fold badges for Ruby projects |
 | `{% render 'header/badges/rust' %}` | Some common above-the-fold badges for Rust projects |
+| `{% render 'header/badges/ts' %}` | Some common above-the-fold badges for TypeScript projects |
 | `{% render 'header/toc' %}` | Quick jump links to common Table of Contents (ToC) sections |
 | `{% render 'section/development' %}` | A shrink-wrap 'Development' section with Git instructions |
 

@@ -5,11 +5,19 @@ impl TryFrom<export::rust::Manifest> for Package {
 
     fn try_from(input: export::rust::Manifest) -> Result<Self, Self::Error> {
         use export::rust::Value;
-
         assert!(!input.needs_workspace_inheritance());
         let package = input.package.unwrap();
+        let rust_version = package.rust_version.map(|x| x.unwrap());
         Ok(Self {
-            language: "rust".into(),
+            language: Language {
+                name: "rust".into(),
+                label: "Rust".into(),
+                extensions: vec![".rs".into(), ".rs.in".into()],
+                version: rust_version.clone(),
+                minimum_version: rust_version,
+                ..Default::default()
+            },
+            languages: vec![],
             name: package.name,
             version: package.version.unwrap().to_string(),
             authors: package.authors.unwrap(),

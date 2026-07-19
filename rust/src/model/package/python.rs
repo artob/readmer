@@ -7,8 +7,20 @@ impl TryFrom<export::python::PyprojectToml> for Package {
         use export::python::{Contact, License};
         let project = input.project.unwrap();
         let project_urls = project.urls.unwrap_or_default();
+        let python_version = project
+            .requires_python
+            .and_then(|vs| vs.into_iter().next())
+            .map(|v| v.version().only_release().to_string());
         Ok(Self {
-            language: "python".into(),
+            language: Language {
+                name: "python".into(),
+                label: "Python".into(),
+                extensions: vec![".py".into()],
+                version: python_version.clone(),
+                minimum_version: python_version,
+                ..Default::default()
+            },
+            languages: vec![],
             name: project.name,
             version: project.version.map(|v| v.to_string()).unwrap_or_default(),
             authors: project

@@ -25,7 +25,7 @@ summary = "Readmer composes `README.md` files from Liquid or Jinja2 templates."
 [features]
 default = ["all", "std"]
 all = ["engines", "languages"]
-alloc = ["dogma/alloc", "serde_json/alloc", "serde_with?/alloc"]
+alloc = ["dogma/alloc", "itertools/use_alloc", "serde_json/alloc", "serde_with?/alloc"]
 cli = ["std", "dep:clap", "dep:tracing-subscriber", "clientele/default", "clientele/tracing"]
 std = ["alloc", "derive_more/std", "dogma/std", "liquid?/stdlib", "minijinja?/std_collections", "serde_with?/std"]
 unstable = []
@@ -51,6 +51,7 @@ derive_more = { version = "2", default-features = false, features = ["display", 
 dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
 dyn-clone = { version = "1.0", default-features = false }
 figment2 = { version = "0.11", default-features = false, features = ["env", "yaml"] }
+itertools = { version = "0.15", default-features = false }
 linguist = { version = "0.1", default-features = false }
 rust-embed = { version = "8.12", default-features = false, features = ["deterministic-timestamps"] }
 send_wrapper = { version = "0.6", default-features = false }

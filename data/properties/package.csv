@@ -1,5 +1,4 @@
 Property,Type,Rust,Dart,JS/TS,Python,Ruby
-`package.language`,`string`,`"rust"`,`"dart"`,`"js"`,`"python"`,`"ruby"`
 `package.name`,`string`,`name`,`name`,`name`,`name`,`name`
 `package.version`,`string`,`version`,`version`,`version`,`version`,`version`
 `package.author`,`string`,`authors[0]`,N/A,`author`,`authors`,`authors[0]`
@@ -12,3 +11,4 @@ Property,Type,Rust,Dart,JS/TS,Python,Ruby
 `package.licenses`,`[string]`,`[license]`,TODO,`[license]`,`[license]`,`licenses`
 `package.repository`,`string`,`repository`,`repository`,N/A,`project.urls.Repository`,`metadata.source_code_uri`
 `package.metadata`,`object`,`metadata`,TODO,TODO,TODO,`metadata`
+`package.language`,`object`,`{...}`,`{...}`,`{...}`,`{...}`,`{...}`

@@ -5,8 +5,17 @@ impl TryFrom<export::js::PackageJson> for Package {
 
     fn try_from(input: export::js::PackageJson) -> Result<Self, Self::Error> {
         use package_json_schema::{Person, PersonObject};
+        let js_version = None; // TODO
         Ok(Self {
-            language: "js".into(),
+            language: Language {
+                name: "js".into(),
+                label: "JavaScript".into(),
+                extensions: vec![".js".into(), ".jsx".into(), ".cjs".into(), ".mjs".into()],
+                version: js_version.clone(),
+                minimum_version: js_version,
+                ..Default::default()
+            },
+            languages: vec![],
             name: input.name.unwrap_or_default(),
             version: input.version.unwrap_or_default(),
             authors: input

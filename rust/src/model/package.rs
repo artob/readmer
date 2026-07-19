@@ -3,6 +3,7 @@
 use super::LoadError;
 use crate::{Utf8Path, export};
 use alloc::{
+    borrow::Cow,
     format,
     string::{String, ToString},
     vec,
@@ -16,9 +17,27 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct Language {
+    pub name: Cow<'static, str>,
+
+    pub label: Cow<'static, str>,
+
+    pub extensions: Vec<Cow<'static, str>>,
+
+    pub version: Option<String>,
+
+    pub minimum_version: Option<String>,
+
+    pub maximum_version: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Package {
-    /// The package's language ecosystem.
-    pub language: String,
+    /// The primary language.
+    pub language: Language,
+
+    /// The implementation languages.
+    pub languages: Vec<Language>,
 
     /// The package name.
     pub name: String,
@@ -105,6 +124,7 @@ impl Package {
     pub fn into_json(self) -> serde_json::Value {
         // Make sure to keep this in sync with `package.csv`!
         serde_json::json!({
+            "language": self.language,
             "name": self.name,
             "version": self.version,
             "author": &self.authors.first(),

@@ -172,7 +172,16 @@ The title of this project is "{{ project.title }}"
 
 {% render 'data/properties/package.csv' %}
 
-### Standard Partials
+### Language Properties
+
+{% render 'data/properties/language.csv' %}
+
+> [!NOTE]
+> The language versions shown above are Readmer's own requirements.
+> When building your own `README.md`, Readmer will populate these properties
+> from your own project's specified language version requirements.
+
+### Builtin Partials
 
 {% render 'data/partials.csv' %}
 

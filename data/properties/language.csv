@@ -1,0 +1,6 @@
+Property,Type,Rust,Dart,JS/TS,Python,Ruby
+`package.language.name`,`string`,`"rust"`,`"dart"`,`"js"`,`"python"`,`"ruby"`
+`package.language.label`,`string`,`"Rust"`,`"Dart"`,`"JavaScript"`,`"Python"`,`"Ruby"`
+`package.language.version`,`string`,`"1.88"`,`"3.11"`,`null`,`"3.14"`,`"4.0"`
+`package.language.minimum_version`,`string`,`"1.88"`,`"3.11"`,`null`,`"3.14"`,`"4.0"`
+`package.language.maximum_version`,`string`,`null`,`null`,`null`,`null`,`null`

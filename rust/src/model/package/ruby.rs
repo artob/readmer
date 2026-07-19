@@ -5,8 +5,25 @@ impl TryFrom<export::ruby::Gemspec> for Package {
 
     fn try_from(input: export::ruby::Gemspec) -> Result<Self, Self::Error> {
         let input_metadata = input.metadata.unwrap_or_default();
+        let ruby_version = input
+            .required_ruby_version
+            .and_then(|r| r.requirements.into_iter().next())
+            .map(|e| e.1.version.clone());
         Ok(Self {
-            language: "ruby".into(),
+            language: Language {
+                name: "ruby".into(),
+                label: "Ruby".into(),
+                extensions: vec![
+                    ".rb".into(),
+                    ".ru".into(),
+                    ".rake".into(),
+                    ".gemspec".into(),
+                ],
+                version: ruby_version.clone(),
+                minimum_version: ruby_version,
+                ..Default::default()
+            },
+            languages: vec![],
             name: input.name,
             version: input.version.version,
             authors: input.authors,
