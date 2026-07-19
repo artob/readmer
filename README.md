@@ -220,7 +220,7 @@ The title of this project is "{{ project.title }}"
 | `{{ github.repository.slug }}` | string | `"artob/readmer"` |
 | `{{ github.repository.link }}` | string | `"https://github.com/artob/readmer"` |
 | `{{ github.repository.url }}` | string | `"https://github.com/artob/readmer.git"` |
-| `{{ package.* }}` | any | See package properties |
+| `{{ package }}` | object | See [package properties](#package-properties) |
 
 ### Package Properties
 
@@ -237,7 +237,7 @@ The title of this project is "{{ project.title }}"
 | `package.license` | `string` | `license` | TODO | `license` | `license` | `licenses[0]` |
 | `package.licenses` | `[string]` | `[license]` | TODO | `[license]` | `[license]` | `licenses` |
 | `package.repository` | `string` | `repository` | `repository` | N/A | `project.urls.Repository` | `metadata.source_code_uri` |
-| `package.metadata` | `string` | `metadata` | TODO | TODO | TODO | `metadata` |
+| `package.metadata` | `object` | `metadata` | TODO | TODO | TODO | `metadata` |
 
 ### Standard Partials
 

@@ -1,6 +1,24 @@
 # Readmer.rb: Readmer for Ruby
 
+[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
+[![Compatibility](https://img.shields.io/badge/ruby-4.0%2B-blue)](https://endoflife.date/ruby)
+[![Package](https://img.shields.io/gem/v/readmer)](https://rubygems.org/gems/readmer)
+[![Documentation](https://img.shields.io/badge/rubydoc-latest-blue)](https://rubydoc.info/gems/readmer)
+
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**
+
+<sub>
+
+[[Features](#-features)] |
+[[Prerequisites](#%EF%B8%8F-prerequisites)] |
+[[Installation](#%EF%B8%8F-installation)] |
+[[Examples](#-examples)] |
+[[Reference](#-reference)] |
+[[Development](#%E2%80%8D-development)]
+
+</sub>
+
+<br/>
 
 ---
 

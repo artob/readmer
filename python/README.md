@@ -1,6 +1,23 @@
 # Readmer.py: Readmer for Python
 
+[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
+[![Compatibility](https://img.shields.io/badge/python-3.14%2B-blue)](https://endoflife.date/python)
+[![Package](https://img.shields.io/pypi/v/readmer)](https://pypi.org/project/readmer)
+
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**
+
+<sub>
+
+[[Features](#-features)] |
+[[Prerequisites](#%EF%B8%8F-prerequisites)] |
+[[Installation](#%EF%B8%8F-installation)] |
+[[Examples](#-examples)] |
+[[Reference](#-reference)] |
+[[Development](#%E2%80%8D-development)]
+
+</sub>
+
+<br/>
 
 ---
 

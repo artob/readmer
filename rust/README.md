@@ -1,7 +1,7 @@
 # Readmer: READMEs Made Simple<sup>™</sup>
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
-[![Compatibility](https://img.shields.io/badge/rust-1.85%2B-blue)](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/)
+[![Compatibility](https://img.shields.io/badge/rust-1.85%2B-blue)](https://endoflife.date/rust)
 [![Package](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
 [![Documentation](https://img.shields.io/docsrs/readmer?label=docs.rs)](https://docs.rs/readmer)
 

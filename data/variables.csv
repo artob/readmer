@@ -10,4 +10,4 @@ Variable,Type,Sample
 `{{ github.repository.slug }}`,string,`"artob/readmer"`
 `{{ github.repository.link }}`,string,`"https://github.com/artob/readmer"`
 `{{ github.repository.url }}`,string,`"https://github.com/artob/readmer.git"`
-`{{ package.* }}`,any,See package properties
+`{{ package }}`,object,See [package properties](#package-properties)

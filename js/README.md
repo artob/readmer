@@ -1,6 +1,23 @@
 # Readmer.js: Readmer for JS/TS
 
+[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
+[![Compatibility](https://img.shields.io/badge/typescript-5.4%2B-blue)](https://typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html)
+[![Package](https://img.shields.io/npm/v/readmer.js)](https://npmjs.com/package/readmer.js)
+
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**
+
+<sub>
+
+[[Features](#-features)] |
+[[Prerequisites](#%EF%B8%8F-prerequisites)] |
+[[Installation](#%EF%B8%8F-installation)] |
+[[Examples](#-examples)] |
+[[Reference](#-reference)] |
+[[Development](#%E2%80%8D-development)]
+
+</sub>
+
+<br/>
 
 ---
 

@@ -12,3 +12,9 @@ dev_dependencies:
   test: ^1.25.0
 environment:
   sdk: ^3.11.0
+topics:
+  - readme
+  - codegen
+  - utilities
+  - utility
+  - tools
