@@ -5,6 +5,7 @@ impl TryFrom<export::dart::Pubspec> for Package {
 
     fn try_from(input: export::dart::Pubspec) -> Result<Self, Self::Error> {
         Ok(Self {
+            language: "dart".into(),
             name: input.name,
             version: input.version.unwrap_or_default(),
             authors: vec![], // N/A: deprecated since Dart 2.7

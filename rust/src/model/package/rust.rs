@@ -9,6 +9,7 @@ impl TryFrom<export::rust::Manifest> for Package {
         assert!(!input.needs_workspace_inheritance());
         let package = input.package.unwrap();
         Ok(Self {
+            language: "rust".into(),
             name: package.name,
             version: package.version.unwrap().to_string(),
             authors: package.authors.unwrap(),

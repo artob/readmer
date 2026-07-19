@@ -6,6 +6,7 @@ impl TryFrom<export::js::PackageJson> for Package {
     fn try_from(input: export::js::PackageJson) -> Result<Self, Self::Error> {
         use package_json_schema::{Person, PersonObject};
         Ok(Self {
+            language: "js".into(),
             name: input.name.unwrap_or_default(),
             version: input.version.unwrap_or_default(),
             authors: input

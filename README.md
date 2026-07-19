@@ -226,6 +226,7 @@ The title of this project is "{{ project.title }}"
 
 | Property | Type | Rust | Dart | JS/TS | Python | Ruby |
 | -------- | ---- | ---- | ---- | ----- | ------ | ---- |
+| `package.language` | `string` | `"rust"` | `"dart"` | `"js"` | `"python"` | `"ruby"` |
 | `package.name` | `string` | `name` | `name` | `name` | `name` | `name` |
 | `package.version` | `string` | `version` | `version` | `version` | `version` | `version` |
 | `package.author` | `string` | `authors[0]` | N/A | `author` | `authors` | `authors[0]` |

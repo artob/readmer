@@ -17,6 +17,9 @@ use serde_json::{Map, Value, json};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Package {
+    /// The package's language ecosystem.
+    pub language: String,
+
     /// The package name.
     pub name: String,
 

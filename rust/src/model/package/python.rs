@@ -8,6 +8,7 @@ impl TryFrom<export::python::PyprojectToml> for Package {
         let project = input.project.unwrap();
         let project_urls = project.urls.unwrap_or_default();
         Ok(Self {
+            language: "python".into(),
             name: project.name,
             version: project.version.map(|v| v.to_string()).unwrap_or_default(),
             authors: project

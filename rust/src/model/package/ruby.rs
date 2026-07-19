@@ -6,6 +6,7 @@ impl TryFrom<export::ruby::Gemspec> for Package {
     fn try_from(input: export::ruby::Gemspec) -> Result<Self, Self::Error> {
         let input_metadata = input.metadata.unwrap_or_default();
         Ok(Self {
+            language: "ruby".into(),
             name: input.name,
             version: input.version.version,
             authors: input.authors,
