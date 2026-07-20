@@ -15,7 +15,7 @@ task codegen: %w[.config/readmer/readmer.sh-session] +
   file ".config/readmer/#{filename}.sh-session" do |t|
     File.open(t.name, 'w') do |f|
       f.puts "$ #{command}"
-      f.puts `#{command}`
+      f.puts `#{command} 2>&1`
     end
   end
 end
