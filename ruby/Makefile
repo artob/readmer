@@ -8,7 +8,7 @@ all: README.md
 	$(GEM) spec $@.gem > $@
 	@rm -f $@.gem
 
-README.md: ../.config/readmer/ruby/README.md.liquid
+README.md: ../.config/readmer/ruby/README.md.liquid .gemspec.yaml
 	$(READMER) render $< > $@
 
 clean:
