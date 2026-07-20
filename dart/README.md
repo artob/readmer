@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
 [![Compatibility](https://img.shields.io/badge/dart-3.11%2B-blue)](https://dart.dev/blog/announcing-dart-3-11)
-[![Package](https://img.shields.io/pub/v/readmer)](https://pub.dev/packages/readmer)
+[![Package on Pub.dev](https://img.shields.io/pub/v/readmer)](https://pub.dev/packages/readmer)
 [![Documentation](https://img.shields.io/badge/docs-passing-green)](https://pub.dev/documentation/readmer)
 
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**

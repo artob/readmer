@@ -1,4 +1,4 @@
 {% render 'badge/unlicense' %}
-{% render 'badge/ts-compat', package: package %}
-{% render 'badge/ts-package', package: package %}
-{% render 'badge/ts-docs', package: package %}
+{% render 'badge/ts-compat', version: package.language.minimum_version %}
+{% render 'badge/ts-package', name: package.name %}
+{% render 'badge/ts-docs', name: package.name %}

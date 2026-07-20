@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
 [![Compatibility](https://img.shields.io/badge/python-3.14%2B-blue)](https://endoflife.date/python)
-[![Package](https://img.shields.io/pypi/v/readmer)](https://pypi.org/project/readmer)
+[![Package on PyPI](https://img.shields.io/pypi/v/readmer)](https://pypi.org/project/readmer)
 
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**
 

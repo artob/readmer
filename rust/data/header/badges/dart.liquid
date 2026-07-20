@@ -1,4 +1,4 @@
 {% render 'badge/unlicense' %}
-{% render 'badge/dart-compat', package: package %}
-{% render 'badge/dart-package', package: package %}
-{% render 'badge/dart-docs', package: package %}
+{% render 'badge/dart-compat', version: package.language.minimum_version %}
+{% render 'badge/dart-package', name: package.name %}
+{% render 'badge/dart-docs', name: package.name %}

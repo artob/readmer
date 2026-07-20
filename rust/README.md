@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
 [![Compatibility](https://img.shields.io/badge/rust-1.88%2B-blue)](https://endoflife.date/rust)
-[![Package](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
+[![Package on Crates.io](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
 [![Documentation](https://img.shields.io/docsrs/readmer?label=docs.rs)](https://docs.rs/readmer)
 
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**

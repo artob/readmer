@@ -1,4 +1,4 @@
 {% render 'badge/unlicense' %}
-{% render 'badge/js-compat', package: package %}
-{% render 'badge/js-package', package: package %}
-{% render 'badge/js-docs', package: package %}
+{% render 'badge/js-compat', version: package.language.minimum_version %}
+{% render 'badge/js-package', name: package.name %}
+{% render 'badge/js-docs', name: package.name %}

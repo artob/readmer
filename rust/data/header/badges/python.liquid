@@ -1,4 +1,4 @@
 {% render 'badge/unlicense' %}
-{% render 'badge/python-compat', package: package %}
-{% render 'badge/python-package', package: package %}
-{% render 'badge/python-docs', package: package %}
+{% render 'badge/python-compat', version: package.language.minimum_version %}
+{% render 'badge/python-package', name: package.name %}
+{% render 'badge/python-docs', name: package.name %}

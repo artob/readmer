@@ -1,4 +1,4 @@
 {% render 'badge/unlicense' %}
-{% render 'badge/rust-compat', package: package %}
-{% render 'badge/rust-package', package: package %}
-{% render 'badge/rust-docs', package: package %}
+{% render 'badge/rust-compat', version: package.language.minimum_version %}
+{% render 'badge/rust-package', name: package.name %}
+{% render 'badge/rust-docs', name: package.name %}

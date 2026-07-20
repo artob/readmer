@@ -1,4 +1,4 @@
 {% render 'badge/unlicense' %}
-{% render 'badge/ruby-compat', package: package %}
-{% render 'badge/ruby-package', package: package %}
-{% render 'badge/ruby-docs', package: package %}
+{% render 'badge/ruby-compat', version: package.language.minimum_version %}
+{% render 'badge/ruby-package', name: package.name %}
+{% render 'badge/ruby-docs', name: package.name %}
