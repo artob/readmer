@@ -188,14 +188,14 @@ The title of this project is "{{ project.title }}"
 ## 👨‍💻 Development
 
 ```bash
-git clone https://github.com/artob/readmer.git
+git clone {{ github.repository.url }}
 ```
 
 ---
 
-{% render 'footer/share', title: project.title, url: 'https://github.com/artob/readmer' %}
+{% render 'footer/share', title: project.title, url: github.repository.link %}
 
-[`readmer`]: https://github.com/artob/readmer#command-line-interface
+[`readmer`]: {{ github.repository.link }}#command-line-interface
 
 [Crates.io]: https://crates.io/crates/readmer
 [NPM]: https://npmjs.com/package/readmer.js

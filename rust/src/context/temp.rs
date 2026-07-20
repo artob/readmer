@@ -20,6 +20,10 @@ impl TempContext {
         }
     }
 
+    pub fn has_defined(&self, name: impl AsRef<str>) -> bool {
+        self.0.contains_key(name.as_ref())
+    }
+
     pub fn define(&mut self, name: impl Into<String>, value: impl Into<Value>) {
         self.0.insert(name.into(), value.into());
     }

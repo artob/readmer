@@ -2,7 +2,7 @@
 
 use crate::Utf8PathBuf;
 use alloc::string::{FromUtf8Error, String};
-use std::{io::Error, process::Command};
+use std::{ffi::OsStr, io::Error, process::Command};
 
 /// An error that can occur when running Git commands.
 #[derive(Debug)]
@@ -29,17 +29,28 @@ impl Git {
         Self(path.into())
     }
 
-    pub fn show_toplevel(&self) -> Result<Utf8PathBuf, GitError> {
+    pub fn remote_get_url(&self) -> Result<String, GitError> {
+        self.execute(["remote", "get-url", "origin"])
+    }
+
+    pub fn rev_parse_show_toplevel(&self) -> Result<Utf8PathBuf, GitError> {
         self.rev_parse("--show-toplevel")
     }
 
-    pub fn show_prefix(&self) -> Result<Utf8PathBuf, GitError> {
+    pub fn rev_parse_show_prefix(&self) -> Result<Utf8PathBuf, GitError> {
         self.rev_parse("--show-prefix")
     }
 
     pub fn rev_parse(&self, option: &str) -> Result<Utf8PathBuf, GitError> {
+        self.execute(["rev-parse", option]).map(|s| s.into())
+    }
+
+    pub fn execute(
+        &self,
+        args: impl IntoIterator<Item = impl AsRef<OsStr>>,
+    ) -> Result<String, GitError> {
         let output = Command::new(&self.0)
-            .args(["rev-parse", option])
+            .args(args)
             .output()
             .map_err(GitError::IoError)?;
         if !output.status.success() {
@@ -49,7 +60,8 @@ impl Git {
                 stderr,
             });
         }
-        let stdout = String::from_utf8(output.stdout).map_err(GitError::InvalidUtf8)?;
-        Ok(stdout.trim().into())
+        let mut stdout = String::from_utf8(output.stdout).map_err(GitError::InvalidUtf8)?;
+        stdout.truncate(stdout.trim_ascii_end().len());
+        Ok(stdout)
     }
 }

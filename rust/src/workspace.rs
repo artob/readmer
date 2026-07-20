@@ -35,7 +35,7 @@ impl AsRef<RootedPath> for Workspace {
 impl Workspace {
     pub fn locate() -> Result<Self> {
         let git = Git::default();
-        let down = git.show_prefix().unwrap(); // FIXME
+        let down = git.rev_parse_show_prefix().unwrap(); // FIXME
         let up_count = down.components().count();
         if up_count == 0 {
             return Ok(Self::default());

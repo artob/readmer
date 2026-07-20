@@ -2,7 +2,7 @@
 
 use super::Context;
 use crate::{
-    TempContext, Utf8Path, Workspace,
+    Git, TempContext, Utf8Path, Workspace,
     model::{LoadError, Package},
 };
 use alloc::{format, string::String};
@@ -25,6 +25,15 @@ impl DirContext {
             output.define("project", project.into_json());
         }
 
+        let git_remote_url = Git::default().remote_get_url();
+        if let Ok(ref url) = git_remote_url {
+            output.define(
+                "git",
+                json!({ "remote": { "url": url } }),
+                // TODO: git.branch
+            );
+        }
+
         let prefix = &self.workspace.0.down;
         if !prefix.as_str().is_empty() {
             let cwd_project = workspace_config.subproject(prefix);
@@ -35,14 +44,16 @@ impl DirContext {
 
         //let package_path = project.unwrap_or_else(|| ".".into()); // TODO
         if let Some(package) = Package::locate(".").ok() {
-            if let Some(repository) = package.repository.as_ref() {
+            if let Some(link) = package.repository.as_ref()
+                && link.contains("github.com")
+            {
                 output.define(
                     "github",
                     json!({
                         // TODO: account
                         "repository": {
-                            "link": repository,
-                            "url": format!("{}.git", repository),
+                            "link": link,
+                            "url": format!("{}.git", link),
                         }
                     }),
                 );
@@ -53,6 +64,33 @@ impl DirContext {
                 });
             });
             output.define("package", package.into_json());
+        }
+
+        if !output.has_defined("github")
+            && let Ok(url) = git_remote_url
+            && url.contains("github.com")
+        {
+            let slug = if let Some(path) = url.strip_prefix("https://github.com/") {
+                // For example: "https://github.com/artob/readmer"
+                // For example: "https://github.com/artob/readmer.git"
+                Some(path.strip_suffix(".git").unwrap_or(path))
+            } else if let Some(path) = url.strip_prefix("ssh://git@github.com/") {
+                // For example: "ssh://git@github.com/artob/readmer.git"
+                Some(path.strip_suffix(".git").unwrap_or(path))
+            } else if let Some(path) = url.strip_prefix("git@github.com:") {
+                // For example: "git@github.com:artob/readmer.git"
+                Some(path.strip_suffix(".git").unwrap_or(path))
+            } else {
+                None // unknown URL formt
+            };
+            if let Some(slug) = slug {
+                let link = format!("https://github.com/{}", slug);
+                let url = format!("{}.git", link);
+                output.define(
+                    "github",
+                    json!({ "repository": { "link": link, "url": url } }),
+                );
+            }
         }
 
         Ok(output)
