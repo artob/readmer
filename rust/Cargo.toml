@@ -84,7 +84,18 @@ tracing-subscriber = { version = "0.3", default-features = false, features = ["e
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.wix]
+upgrade-guid = "6AA45254-E04C-40EA-940F-4701BA595665"
+path-guid = "C58CE79F-C750-48FD-8693-B1CAB598D787"
+license = false
+eula = false
+
 [[bin]]
 name = "readmer"
 path = "src/main.rs"
 required-features = ["cli"]
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
