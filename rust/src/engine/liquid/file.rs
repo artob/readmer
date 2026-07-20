@@ -75,6 +75,7 @@ impl FileSource {
                 if let Ok(headers) = reader.headers() {
                     output.push('|');
                     for column in headers {
+                        let column = column.trim_ascii_start();
                         output.push(' ');
                         output.push_str(column);
                         output.push_str(" |");
@@ -82,6 +83,7 @@ impl FileSource {
                     output.push('\n');
                     output.push('|');
                     for column in headers {
+                        let column = column.trim_ascii_start();
                         output.push(' ');
                         output.push_str(&"-".repeat(column.len()));
                         output.push_str(" |");
@@ -92,6 +94,7 @@ impl FileSource {
                     let record = record?;
                     output.push('|');
                     for column in &record {
+                        let column = column.trim_ascii_start();
                         output.push(' ');
                         if column.contains('|') {
                             output.push_str(&column.replace('|', "\\|"));
