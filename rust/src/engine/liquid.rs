@@ -53,7 +53,11 @@ impl Engine for LiquidEngine {
             .parse(template_data)?;
 
         let context = liquid::to_object(&context.to_json())?;
-        let output = template.render(&context)?;
+        let mut output = template.render(&context)?;
+        if output.contains("\n\n\n") {
+            // Suppress spurious newlines due to empty partial output:
+            output = output.replace("\n\n\n", "\n\n");
+        }
         Ok(output) // always newline-terminated
     }
 }
