@@ -20,9 +20,27 @@
 
 <br/>
 
+## ✨ Features
+
+- Available both as the command-line tool [`readmer`] and as a polyglot library.
+- Polyglot software also available for Dart, Python, Rust, and TypeScript.
+- Cuts red tape: 100% free and unencumbered public domain software.
+
 ## 🛠️ Prerequisites
 
 - [Ruby] 4.0+
+
+## ⬇️ Installation
+
+## 👉 Examples
+
+## 📚 Reference
+
+## 👨‍💻 Development
+
+```bash
+git clone https://github.com/artob/readmer.git
+```
 
 ---
 
