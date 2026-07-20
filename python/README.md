@@ -19,6 +19,10 @@
 
 <br/>
 
+## 🛠️ Prerequisites
+
+- [Python] 3.14+
+
 ---
 
 [![Share on X](https://img.shields.io/badge/share%20on-x-03A9F4?logo=x)](https://x.com/intent/post?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer&text=Readmer%3A%20READMEs%20Made%20Simple)
@@ -28,3 +32,5 @@
 [![Share on LinkedIn](https://img.shields.io/badge/share%20on-linkedin-3949AB?logo=linkedin)](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fartob%2Freadmer)
 
 [`readmer`]: https://github.com/artob/readmer#command-line-interface
+
+[Python]: https://python.org
