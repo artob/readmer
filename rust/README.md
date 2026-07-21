@@ -39,19 +39,38 @@
 
 ## ⬇️ Installation
 
-### Installation of the CLI via Cargo
+### Installation of the CLI
+
+#### Installation via [Cargo Binstall]
+
+```bash
+cargo binstall -y readmer
+```
+
+<img width="100%" alt="Installation via cargo-binstall" src="https://github.com/artob/readmer/raw/master/rust/etc/asciinema/install.gif"/>
+
+#### Installation via [Cargo]
 
 ```bash
 cargo install readmer --locked --features=cli
 ```
 
-### Installation of the Library via Cargo
+### Installation of the Library
+
+<details>
+<summary>Installation from Crates.io</summary>
+
+#### Installation from [Crates.io]
 
 ```bash
 cargo add --dev readmer
 ```
+</details>
 
-### Installation of the Library in `Cargo.toml`
+<details>
+<summary>Configuration in <code>Cargo.toml</code></summary>
+
+#### Configuration in `Cargo.toml`
 
 Enable all default features:
 
@@ -66,6 +85,7 @@ Enable only specific features:
 [dev-dependencies]
 readmer = { version = "0", default-features = false, features = ["alloc"] }
 ```
+</details>
 
 ## 👉 Examples
 
@@ -166,8 +186,11 @@ git clone https://github.com/artob/readmer.git
 
 [`readmer`]: https://github.com/artob/readmer#command-line-interface
 
+[Crates.io]: https://crates.io/crates/readmer
 [feature flags]: https://docs.rs/crate/readmer/latest/features
 [naming conventions]: https://rust-lang.github.io/api-guidelines/naming.html
 
+[Cargo]: https://rustup.rs
+[Cargo Binstall]: https://crates.io/crates/cargo-binstall
 [Linguist]: https://github.com/github-linguist/linguist
 [Rust]: https://rust-lang.org

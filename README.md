@@ -24,6 +24,14 @@
 
 ### Installation of the CLI
 
+#### Installation via [Cargo Binstall]
+
+```bash
+cargo binstall -y readmer
+```
+
+<img width="100%" alt="Installation via cargo-binstall" src="https://github.com/artob/readmer/raw/master/rust/etc/asciinema/install.gif"/>
+
 #### Installation via [Cargo]
 
 ```bash
@@ -294,6 +302,7 @@ git clone https://github.com/artob/readmer.git
 [RubyGems]: https://rubygems.org/gems/readmer
 
 [Cargo]: https://rustup.rs
+[Cargo Binstall]: https://crates.io/crates/cargo-binstall
 [Jinja2]: https://jinja.palletsprojects.com
 [Linguist]: https://github.com/github-linguist/linguist
 [Liquid]: https://shopify.dev/docs/api/liquid
