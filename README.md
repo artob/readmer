@@ -9,6 +9,19 @@
 
 **Readmer composes `README.md` files from Liquid or Jinja2 templates.**
 
+<sub>
+
+[[Features](#-features)] |
+[[Prerequisites](#%EF%B8%8F-prerequisites)] |
+[[Installation](#%EF%B8%8F-installation)] |
+[[Examples](#-examples)] |
+[[Reference](#-reference)] |
+[[Development](#%E2%80%8D-development)]
+
+</sub>
+
+<br/>
+
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a polyglot library.
