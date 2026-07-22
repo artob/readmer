@@ -26,13 +26,16 @@
 
 - Available both as the command-line tool [`readmer`] and a Rust library.
 - Build `README.md` from Liquid/Jinja2/etc templates in `.config/readmer/`.
+- Keeps you in charge: use as little or as much code generation as you like.
+- Extracts package metadata for Dart, NPM, Python, Ruby, and Rust projects.
 - Embeds `{% render 'table.csv' %}` partials as Markdown tables.
 - Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
 - Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
-- Supports syntax highlighting for all file types recognized by [Linguist].
+- Supports syntax highlighting for 800+ file types recognized by [Linguist].
+- Includes numerous builtin partials for rendering header/footer badges.
 - Supports opting out of any feature using comprehensive [feature flags].
 - Adheres to the Rust API Guidelines in its [naming conventions].
-- Polyglot software also available for Dart, Python, Ruby, and TypeScript.
+- Polyglot software also (soon!) available for Dart, Python, Ruby, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
 ## 🛠️ Prerequisites
@@ -101,10 +104,33 @@ readmer = { version = "0", default-features = false, features = ["alloc"] }
 
 ## 👉 Examples
 
+### Initializing the Template
+
+Execute this in your project's workspace (aka top-level) directory, to create
+an initial `.config/readmer/README.md.liquid` template:
+
+```bash
+mkdir -p .config/readmer/
+echo '# {{ package.name | capitalize }}' > .config/readmer/README.md.liquid
+```
 ### Building the `README.md` File
+
+In your project's workspace directory, this will render the
+`.config/readmer/README.md.liquid` template and write the output to `./README.md`.
+In subdirectories under your workspace, it will render the corresponding
+`.config/readmer/.../README.md.liquid` template if one exists.
 
 ```bash
 readmer render > README.md
+```
+
+### Examining Template Variables
+
+In any project directory, you can examine the template variables available to
+you using `readmer describe`:
+
+```bash
+readmer describe
 ```
 
 ### Importing the Library
