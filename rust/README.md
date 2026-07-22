@@ -20,6 +20,8 @@
 
 <br/>
 
+<img width="100%" alt="Showcase of readmer render" src="https://github.com/artob/readmer/raw/master/rust/etc/asciinema/demo.gif"/>
+
 ## ✨ Features
 
 - Available both as the command-line tool [`readmer`] and a Rust library.
