@@ -2,7 +2,7 @@
 
 [package]
 name = "readmer"
-version = "0.0.6"
+version = "0.1.0"
 authors = ["Arto Bendiken"]
 edition = "2024"
 rust-version = "1.88" # because dependencies
