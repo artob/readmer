@@ -29,13 +29,13 @@
 - Available both as the command-line tool [`readmer`] and a polyglot library.
 - Build `README.md` from Liquid/Jinja2/etc templates in `.config/readmer/`.
 - Keeps you in charge: use as little or as much code generation as you like.
-- Extracts package metadata for Dart, NPM, Python, Ruby, and Rust projects.
+- Ingests package metadata from Dart, NPM, Python, Ruby, and Rust projects.
 - Embeds `{% render 'table.csv' %}` partials as Markdown tables.
 - Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
 - Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
 - Supports syntax highlighting for 800+ file types recognized by [Linguist].
-- Includes numerous builtin partials for rendering header/footer badges.
-- Polyglot software (soon!) available for Dart, Python, Ruby, Rust, and TypeScript.
+- Includes numerous builtin partials for rendering e.g. header/footer badges.
+- Polyglot software <sup><sub>(soon!)</sub></sup> available for Dart, Python, Ruby, Rust, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
 ## ⬇️ Installation
@@ -117,6 +117,9 @@ bundle add readmer --group development
 </details>
 
 ## 👉 Examples
+
+> [!TIP]
+> For a concrete showcase example, refer to the [Edky] repository.
 
 ### Initializing the Template
 
@@ -230,10 +233,18 @@ default as well as the more featureful implementation:
 The title of this project is "{{ project.title }}"
 ```
 
-#### Rendering Partials
+#### Rendering Builtin Partials
 
 ```liquid
 {% render 'badge/unlicense' %}
+```
+
+#### Rendering Custom Partials
+
+This will look for a custom partial at `mydir/myfile.md` in your workspace:
+
+```liquid
+{% render 'mydir/myfile.md' %}
 ```
 
 #### Rendering Code Blocks
@@ -344,6 +355,7 @@ git clone https://github.com/artob/readmer.git
 
 [Cargo]: https://rustup.rs
 [Cargo Binstall]: https://crates.io/crates/cargo-binstall
+[Edky]: https://github.com/artob/edky
 [Jinja2]: https://jinja.palletsprojects.com
 [Linguist]: https://github.com/github-linguist/linguist
 [Liquid]: https://shopify.dev/docs/api/liquid

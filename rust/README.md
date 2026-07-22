@@ -27,15 +27,15 @@
 - Available both as the command-line tool [`readmer`] and a Rust library.
 - Build `README.md` from Liquid/Jinja2/etc templates in `.config/readmer/`.
 - Keeps you in charge: use as little or as much code generation as you like.
-- Extracts package metadata for Dart, NPM, Python, Ruby, and Rust projects.
+- Ingests package metadata from Dart, NPM, Python, Ruby, and Rust projects.
 - Embeds `{% render 'table.csv' %}` partials as Markdown tables.
 - Embeds `{% render 'data.json' %}` as pretty-printed JSON code blocks.
 - Embeds `{% render 'example.rs' %}` as syntax-highlighted code blocks.
 - Supports syntax highlighting for 800+ file types recognized by [Linguist].
-- Includes numerous builtin partials for rendering header/footer badges.
+- Includes numerous builtin partials for rendering e.g. header/footer badges.
 - Supports opting out of any feature using comprehensive [feature flags].
 - Adheres to the Rust API Guidelines in its [naming conventions].
-- Polyglot software also (soon!) available for Dart, Python, Ruby, and TypeScript.
+- Polyglot software also <sup><sub>(soon!)</sub></sup> available for Dart, Python, Ruby, and TypeScript.
 - Cuts red tape: 100% free and unencumbered public domain software.
 
 ## 🛠️ Prerequisites
@@ -103,6 +103,9 @@ readmer = { version = "0", default-features = false, features = ["alloc"] }
 </details>
 
 ## 👉 Examples
+
+> [!TIP]
+> For a concrete showcase example, refer to the [Edky] repository.
 
 ### Initializing the Template
 
@@ -230,5 +233,6 @@ git clone https://github.com/artob/readmer.git
 
 [Cargo]: https://rustup.rs
 [Cargo Binstall]: https://crates.io/crates/cargo-binstall
+[Edky]: https://github.com/artob/edky
 [Linguist]: https://github.com/github-linguist/linguist
 [Rust]: https://rust-lang.org
