@@ -50,6 +50,12 @@ cargo binstall -y readmer
 
 <img width="100%" alt="Installation via cargo-binstall" src="https://github.com/artob/readmer/raw/master/rust/etc/asciinema/install.gif"/>
 
+#### Installation via [mise]
+
+```bash
+mise use -g github:artob/readmer
+```
+
 #### Installation via [Cargo]
 
 ```bash
@@ -361,6 +367,7 @@ git clone https://github.com/artob/readmer.git
 [Liquid]: https://shopify.dev/docs/api/liquid
 [liquid]: https://crates.io/crates/liquid
 [minijinja]: https://crates.io/crates/minijinja
+[mise]: https://mise.jdx.dev
 
 [@cobalt-org]: https://github.com/cobalt-org
 [@mitsuhiko]: https://github.com/mitsuhiko
