@@ -1,7 +1,7 @@
 GEM = gem
 READMER = readmer
 
-all: README.md
+all: .gemspec.yaml README.md
 
 .gemspec.yaml: readmer.gemspec
 	@$(GEM) build --silent -o $@.gem $<

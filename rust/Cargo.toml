@@ -48,6 +48,7 @@ rust = ["dep:cargo_toml", "dep:toml1"]
 camino = { version = "1.2", default-features = false }
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
+distrib = { version = "0", default-features = false }
 dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
 dyn-clone = { version = "1.0", default-features = false }
 figment2 = { version = "0.11", default-features = false, features = ["env", "yaml"] }
@@ -103,3 +104,5 @@ disabled-strategies = ["quick-install"]
 [profile.dist]
 inherits = "release"
 lto = "thin"
+
+[patch.crates-io]
