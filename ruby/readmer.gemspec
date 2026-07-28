@@ -19,12 +19,14 @@ Gem::Specification.new do |gem|
   gem.email              = "arto@bendiken.net"
 
   gem.platform           = Gem::Platform::RUBY
-  gem.files              = %w(AUTHORS CHANGES.md README.md UNLICENSE VERSION) + Dir.glob('lib/**/*.rb')
-  gem.bindir             = %q(bin)
-  gem.executables        = %w()
+  gem.files              = %w[AUTHORS CHANGES.md README.md UNLICENSE VERSION] + Dir['lib/**/*.rb']
+  gem.bindir             = %q[bin]
+  gem.executables        = %w[]
 
   gem.required_ruby_version = '>= 4.0'
-  gem.add_development_dependency 'distrib', '~> 0'
-  gem.add_development_dependency 'rspec',   '~> 3.13'
-  gem.add_development_dependency 'yard' ,   '~> 0.9'
+  gem.add_development_dependency 'distrib',       '~> 0'
+  gem.add_development_dependency 'rake',          '~> 13'
+  gem.add_development_dependency 'rake-compiler', '~> 1.3'
+  gem.add_development_dependency 'rspec',         '~> 3.13'
+  gem.add_development_dependency 'yard' ,         '~> 0.9'
 end
