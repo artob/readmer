@@ -1,10 +1,10 @@
 // This is free and unencumbered software released into the public domain.
 
-impl TryFrom<export::python::PyprojectToml> for Package {
-    type Error = export::python::LoadPyprojectError;
+impl TryFrom<distrib::python::PyprojectToml> for Package {
+    type Error = distrib::python::LoadPyprojectError;
 
-    fn try_from(input: export::python::PyprojectToml) -> Result<Self, Self::Error> {
-        use export::python::{Contact, License};
+    fn try_from(input: distrib::python::PyprojectToml) -> Result<Self, Self::Error> {
+        use distrib::python::{Contact, License};
         let project = input.project.unwrap();
         let project_urls = project.urls.unwrap_or_default();
         let python_version = project

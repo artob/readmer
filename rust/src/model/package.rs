@@ -1,7 +1,7 @@
 // This is free and unencumbered software released into the public domain.
 
 use super::LoadError;
-use crate::{Utf8Path, export};
+use crate::Utf8Path;
 use alloc::{
     borrow::Cow,
     format,
@@ -97,19 +97,21 @@ impl Package {
         let file_path = file_path.as_ref();
         Ok(match file_path.file_name() {
             #[cfg(feature = "ruby")]
-            Some(".gemspec.yaml") => export::ruby::load_gemspec(file_path)?.try_into()?, // TODO
+            Some(".gemspec.yaml") => distrib::ruby::load_gemspec(file_path)?.try_into()?, // TODO
 
             #[cfg(feature = "rust")]
-            Some("Cargo.toml") => export::rust::load_cargo_toml(file_path)?.try_into()?,
+            Some("Cargo.toml") => distrib::rust::load_cargo_toml(file_path)?.try_into()?,
 
             #[cfg(feature = "js")]
-            Some("package.json") => export::js::load_package_json(file_path)?.try_into()?,
+            Some("package.json") => distrib::js::load_package_json(file_path)?.try_into()?,
 
             #[cfg(feature = "dart")]
-            Some("pubspec.yaml") => export::dart::load_pubspec(file_path)?.try_into()?,
+            Some("pubspec.yaml") => distrib::dart::load_pubspec(file_path)?.try_into()?,
 
             #[cfg(feature = "python")]
-            Some("pyproject.toml") => export::python::load_pyproject_toml(file_path)?.try_into()?,
+            Some("pyproject.toml") => {
+                distrib::python::load_pyproject_toml(file_path)?.try_into()?
+            },
 
             _ => {
                 return Err(LoadError::UnknownPackageFormat(file_path.into()));

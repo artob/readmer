@@ -1,9 +1,9 @@
 // This is free and unencumbered software released into the public domain.
 
-impl TryFrom<export::dart::Pubspec> for Package {
-    type Error = export::dart::LoadPubspecError;
+impl TryFrom<distrib::dart::Pubspec> for Package {
+    type Error = distrib::dart::LoadPubspecError;
 
-    fn try_from(input: export::dart::Pubspec) -> Result<Self, Self::Error> {
+    fn try_from(input: distrib::dart::Pubspec) -> Result<Self, Self::Error> {
         use itertools::Itertools;
         let dart_version = input
             .environment

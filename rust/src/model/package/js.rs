@@ -1,10 +1,10 @@
 // This is free and unencumbered software released into the public domain.
 
-impl TryFrom<export::js::PackageJson> for Package {
-    type Error = export::js::LoadPackageError;
+impl TryFrom<distrib::js::PackageJson> for Package {
+    type Error = distrib::js::LoadPackageError;
 
-    fn try_from(input: export::js::PackageJson) -> Result<Self, Self::Error> {
-        use package_json_schema::{Person, PersonObject, Repository};
+    fn try_from(input: distrib::js::PackageJson) -> Result<Self, Self::Error> {
+        use package_json_schema::{Person, PersonObject, Repository}; // FIXME: distrib::js::
         let js_version = None; // TODO
         Ok(Self {
             language: Language {

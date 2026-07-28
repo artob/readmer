@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::{Utf8PathBuf, export};
+use crate::Utf8PathBuf;
 use alloc::{
     boxed::Box,
     string::{String, ToString},
@@ -20,36 +20,36 @@ pub enum LoadError {
 }
 
 #[cfg(feature = "dart")]
-impl From<export::dart::LoadPubspecError> for LoadError {
-    fn from(error: export::dart::LoadPubspecError) -> Self {
+impl From<distrib::dart::LoadPubspecError> for LoadError {
+    fn from(error: distrib::dart::LoadPubspecError) -> Self {
         LoadError::Other(error.into())
     }
 }
 
 #[cfg(feature = "js")]
-impl From<export::js::LoadPackageError> for LoadError {
-    fn from(error: export::js::LoadPackageError) -> Self {
+impl From<distrib::js::LoadPackageError> for LoadError {
+    fn from(error: distrib::js::LoadPackageError) -> Self {
         LoadError::Other(error.into())
     }
 }
 
 #[cfg(feature = "python")]
-impl From<export::python::LoadPyprojectError> for LoadError {
-    fn from(error: export::python::LoadPyprojectError) -> Self {
+impl From<distrib::python::LoadPyprojectError> for LoadError {
+    fn from(error: distrib::python::LoadPyprojectError) -> Self {
         LoadError::Other(error.into())
     }
 }
 
 #[cfg(feature = "ruby")]
-impl From<export::ruby::LoadGemspecError> for LoadError {
-    fn from(error: export::ruby::LoadGemspecError) -> Self {
+impl From<distrib::ruby::LoadGemspecError> for LoadError {
+    fn from(error: distrib::ruby::LoadGemspecError) -> Self {
         LoadError::Other(error.into())
     }
 }
 
 #[cfg(feature = "rust")]
-impl From<export::rust::LoadManifestError> for LoadError {
-    fn from(error: export::rust::LoadManifestError) -> Self {
+impl From<distrib::rust::LoadManifestError> for LoadError {
+    fn from(error: distrib::rust::LoadManifestError) -> Self {
         LoadError::Other(error.into())
     }
 }

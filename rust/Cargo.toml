@@ -25,9 +25,9 @@ summary = "Readmer composes `README.md` files from Liquid or Jinja2 templates."
 [features]
 default = ["all", "std"]
 all = ["engines", "languages"]
-alloc = ["dogma/alloc", "itertools/use_alloc", "serde_json/alloc", "serde_with?/alloc"]
+alloc = ["distrib/alloc", "dogma/alloc", "itertools/use_alloc", "serde_json/alloc"]
 cli = ["std", "dep:clap", "dep:tracing-subscriber", "clientele/default", "clientele/tracing"]
-std = ["alloc", "derive_more/std", "dogma/std", "liquid?/stdlib", "minijinja?/std_collections", "serde_with?/std"]
+std = ["alloc", "derive_more/std", "distrib/std", "dogma/std", "liquid?/stdlib", "minijinja?/std_collections"]
 unstable = []
 
 # Engines:
@@ -38,17 +38,17 @@ liquid = ["dep:liquid"]
 # Languages:
 languages = ["csv", "dart", "js", "python", "ruby", "rust"]
 csv = ["dep:csv"]
-dart = []
-js = ["dep:package_json_schema"]
-python = ["dep:pyproject-toml", "dep:toml0"]
-ruby = ["dep:serde_norway", "dep:serde_with"]
-rust = ["dep:cargo_toml", "dep:toml1"]
+dart = ["distrib/dart"]
+js = ["distrib/js", "dep:package_json_schema"] # FIXME
+python = ["distrib/python"]
+ruby = ["distrib/ruby"]
+rust = ["distrib/rust"]
 
 [dependencies]
 camino = { version = "1.2", default-features = false }
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
-distrib = { version = "0", default-features = false }
+distrib = { version = "0.0.1", default-features = false, features = ["serde"] }
 dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
 dyn-clone = { version = "1.0", default-features = false }
 figment2 = { version = "0.11", default-features = false, features = ["env", "yaml"] }
@@ -66,15 +66,8 @@ liquid = { version = "0.26", default-features = false, optional = true }
 minijinja = { version = "2.21", default-features = false, features = ["json", "serde"], optional = true }
 
 # Languages:
-cargo_toml = { version = "1.0", default-features = false, optional = true }
 csv = { version = "1.4", default-features = false, optional = true }
 package_json_schema = { version = "0.3", default-features = false, optional = true }
-pyproject-toml = { version = "0.13", default-features = false, optional = true }
-#rubyrs = { version = "0.2", default-features = false, optional = true }
-serde_norway = { version = "0.9", default-features = false, optional = true }
-serde_with = { version = "3.21", default-features = false, features = ["macros"], optional = true }
-toml0 = { package = "toml", version = "0.9", default-features = false, optional = true }
-toml1 = { package = "toml", version = "1.0", default-features = false, optional = true }
 
 # CLI:
 clap = { version = "4.5", default-features = false, optional = true }

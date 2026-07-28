@@ -1,10 +1,10 @@
 // This is free and unencumbered software released into the public domain.
 
-impl TryFrom<export::rust::Manifest> for Package {
-    type Error = export::rust::LoadManifestError;
+impl TryFrom<distrib::rust::Manifest> for Package {
+    type Error = distrib::rust::LoadManifestError;
 
-    fn try_from(input: export::rust::Manifest) -> Result<Self, Self::Error> {
-        use export::rust::{Edition, Value};
+    fn try_from(input: distrib::rust::Manifest) -> Result<Self, Self::Error> {
+        use distrib::rust::{Edition, Value};
         assert!(!input.needs_workspace_inheritance());
         let package = input.package.unwrap();
         let rust_edition = package.edition.unwrap();
