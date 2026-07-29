@@ -1,32 +1,14 @@
-Gem::Specification.new do |gem|
-  gem.version            = File.read('VERSION').chomp
-  gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
+# See: https://docs.ruby-lang.org/en/4.0/Gem/Specification.html
 
-  gem.name               = "readmer"
-  gem.homepage           = "https://readmer.dev"
-  gem.license            = "Unlicense"
-  gem.summary            = "Readmer for Ruby"
-  gem.description        = "Compose README.md files from templates."
-  gem.metadata           = {
-    'bug_tracker_uri'   => "https://github.com/artob/readmer/issues",
-    'changelog_uri'     => "https://github.com/artob/readmer/blob/master/CHANGES.md",
-    'documentation_uri' => "https://rubydoc.info/gems/readmer",
-    'homepage_uri'      => "https://readmer.dev",
-    'source_code_uri'   => "https://github.com/artob/readmer",
-  }
+require 'distrib/ruby/gemspec'
 
-  gem.author             = "Arto Bendiken"
-  gem.email              = "arto@bendiken.net"
-
-  gem.platform           = Gem::Platform::RUBY
-  gem.files              = %w[AUTHORS CHANGES.md README.md UNLICENSE VERSION] + Dir['lib/**/*.rb']
-  gem.bindir             = %q[bin]
-  gem.executables        = %w[]
-
-  gem.required_ruby_version = '>= 4.0'
-  gem.add_development_dependency 'distrib',       '~> 0'
-  gem.add_development_dependency 'rake',          '~> 13'
-  gem.add_development_dependency 'rake-compiler', '~> 1.3'
-  gem.add_development_dependency 'rspec',         '~> 3.13'
-  gem.add_development_dependency 'yard' ,         '~> 0.9'
+Distrib::Ruby::Gemspec.build!(__FILE__) do |gemspec|
+  gemspec.summary     = "Readmer for Ruby"
+  gemspec.description = "Compose README.md files from templates."
+  gemspec.homepage    = "https://readmer.dev"
+  gemspec.metadata    = {
+    :source_code_uri => "https://github.com/artob/readmer",
+    :bug_tracker_uri => "https://github.com/artob/readmer/issues",
+    :changelog_uri   => "https://github.com/artob/readmer/blob/master/CHANGES.md",
+  }.transform_keys(&:to_s)
 end
