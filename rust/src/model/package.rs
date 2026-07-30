@@ -74,8 +74,6 @@ impl Package {
     pub fn locate(dir_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let dir_path = dir_path.as_ref();
         for file_name in [
-            #[cfg(feature = "rust")]
-            "Cargo.toml",
             #[cfg(feature = "js")]
             "package.json",
             #[cfg(feature = "dart")]
@@ -84,6 +82,9 @@ impl Package {
             "pyproject.toml",
             #[cfg(feature = "ruby")]
             ".gemspec.yaml", // TODO
+            // This should be last, to support polyglot projects:
+            #[cfg(feature = "rust")]
+            "Cargo.toml",
         ] {
             let file_path = dir_path.join(file_name);
             if file_path.exists() {
