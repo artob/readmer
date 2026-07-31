@@ -20,6 +20,7 @@ impl DirContext {
 
         let workspace_config = self.workspace.config();
 
+        // Load `.config/readmer/project.yaml` if it exists:
         let root_project = workspace_config.project();
         if let Some(project) = root_project {
             output.define("project", project.into_json());
@@ -36,6 +37,7 @@ impl DirContext {
 
         let prefix = &self.workspace.0.down;
         if !prefix.as_str().is_empty() {
+            // Load `.config/readmer/.../project.yaml` if it exists:
             let cwd_project = workspace_config.subproject(prefix);
             if let Some(project) = cwd_project {
                 output.define("subproject", project.into_json());
