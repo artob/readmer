@@ -30,7 +30,7 @@ struct Options {
 
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// TODO
+    /// Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid.
     #[clap(aliases = ["i", "in", "ini", "install"])]
     Init {},
 
@@ -212,28 +212,36 @@ pub fn run() -> Result<(), ProgramError> {
             warn!("Created the directory `{}`.", ".config/readmer/");
 
             // cp -f README.md .config/readmer/README.md.liquid
-            if std::fs::exists("README.md")? {
-                info!(
-                    "Copying `{}` to `{}`...",
-                    "README.md", ".config/readmer/README.md.liquid"
-                );
-                std::fs::copy("README.md", ".config/readmer/README.md.liquid")?;
-                warn!(
-                    "Copied `{}` to `{}`.",
-                    "README.md", ".config/readmer/README.md.liquid"
-                );
+            if !std::fs::exists(".config/readmer/README.md.liquid")? {
+                if std::fs::exists("README.md")? {
+                    info!(
+                        "Copying `{}` to `{}`...",
+                        "README.md", ".config/readmer/README.md.liquid"
+                    );
+                    std::fs::copy("README.md", ".config/readmer/README.md.liquid")?;
+                    warn!(
+                        "Copied `{}` to `{}`.",
+                        "README.md", ".config/readmer/README.md.liquid"
+                    );
+                } else {
+                    info!(
+                        "Creating the file `{}`...",
+                        ".config/readmer/README.md.liquid"
+                    );
+                    std::fs::write(".config/readmer/README.md.liquid", "")?;
+                    warn!("Created the file `{}`.", ".config/readmer/README.md.liquid");
+                }
             }
 
             // echo "..." > .config/readmer/project.yaml
-            info!("Creating the file `{}`...", ".config/readmer/project.yaml");
-            std::fs::write(
-                ".config/readmer/project.yaml",
-                r#"
-                # See: https://github.com/artob/readmer#template-variables
-                ---
-                "#,
-            )?;
-            warn!("Created the file `{}`.", ".config/readmer/project.yaml");
+            if !std::fs::exists(".config/readmer/project.yaml")? {
+                info!("Creating the file `{}`...", ".config/readmer/project.yaml");
+                std::fs::write(
+                    ".config/readmer/project.yaml",
+                    "# See: https://github.com/artob/readmer#template-variables\n---\n",
+                )?;
+                warn!("Created the file `{}`.", ".config/readmer/project.yaml");
+            }
         },
 
         #[cfg(feature = "unstable")]
