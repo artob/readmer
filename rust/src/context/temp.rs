@@ -12,10 +12,20 @@ impl TempContext {
         Self::default()
     }
 
-    pub fn merge(&mut self, json: impl Into<Value>) {
-        if let Some(obj) = json.into().as_object() {
-            for (key, val) in obj {
+    pub fn merge(&mut self, input: impl Into<Value>) {
+        let input = input.into();
+        let Some(input) = input.as_object() else {
+            return;
+        };
+        for (key, val) in input {
+            if !self.has_defined(key) {
                 self.define(key, val.clone());
+            } else if let Some(old) = self.0.get_mut(key).and_then(|v| v.as_object_mut())
+                && let Some(new) = val.as_object()
+            {
+                for (key, val) in new {
+                    old.insert(key.clone(), val.clone());
+                }
             }
         }
     }
