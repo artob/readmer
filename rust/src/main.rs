@@ -207,9 +207,11 @@ pub fn run() -> Result<(), ProgramError> {
     match options.command.unwrap_or_default() {
         Command::Init {} => {
             // mkdir -p .config/readmer/
-            info!("Creating the directory `{}`...", ".config/readmer/");
-            std::fs::create_dir_all(".config/readmer/")?;
-            warn!("Created the directory `{}`.", ".config/readmer/");
+            if !std::fs::exists(".config/readmer")? {
+                info!("Creating the directory `{}`...", ".config/readmer/");
+                std::fs::create_dir_all(".config/readmer/")?;
+                warn!("Created the directory `{}`.", ".config/readmer/");
+            }
 
             // cp -f README.md .config/readmer/README.md.liquid
             if !std::fs::exists(".config/readmer/README.md.liquid")? {
