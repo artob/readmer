@@ -31,9 +31,13 @@ struct Options {
 #[derive(Debug, Subcommand)]
 enum Command {
     /// TODO
-    #[cfg(feature = "unstable")]
     #[clap(aliases = ["i", "in", "ini", "install"])]
     Init {},
+
+    /// TODO: implement `readmer check`
+    #[cfg(feature = "unstable")]
+    #[clap(aliases = ["c", "ch", "che"])]
+    Check {},
 
     /// Build ./README.md from templates in $WORKSPACE/.config/readmer/.
     #[cfg(feature = "unstable")]
@@ -194,9 +198,26 @@ pub fn run() -> Result<(), ProgramError> {
     let mut result = Ok(());
 
     match options.command.unwrap_or_default() {
-        #[cfg(feature = "unstable")]
         Command::Init {} => {
-            // TODO: implement `readmer init`
+            // mkdir -p .config/readmer/
+            std::fs::create_dir_all(".config/readmer/")?;
+
+            // cp -f README.md .config/readmer/README.md.liquid
+            std::fs::copy("README.md", ".config/readmer/README.md.liquid")?;
+
+            // echo "..." > .config/readmer/project.yaml
+            std::fs::write(
+                ".config/readmer/project.yaml",
+                r#"
+                # See: https://github.com/artob/readmer#template-variables
+                ---
+                "#,
+            )?;
+        },
+
+        #[cfg(feature = "unstable")]
+        Command::Check {} => {
+            // TODO: implement `readmer check`
         },
 
         #[cfg(feature = "unstable")]
