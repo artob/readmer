@@ -14,7 +14,7 @@ use readmer::{
 };
 use std::{default, path::PathBuf};
 use thiserror::Error;
-use tracing::error;
+use tracing::{error, info, warn};
 
 /// Readmer composes README.md files from Liquid or Jinja2 templates.
 #[derive(Debug, Parser)]
@@ -192,6 +192,13 @@ pub fn run() -> Result<(), ProgramError> {
             .with_file(false)
             .with_line_number(false)
             .with_env_filter(tracing_subscriber::EnvFilter::from_default_env()) // respects RUST_LOG
+            .with_max_level(match options.flags.verbose {
+                0 => tracing::Level::ERROR,
+                1 => tracing::Level::WARN,
+                2 => tracing::Level::INFO,
+                3 => tracing::Level::DEBUG,
+                _ => tracing::Level::TRACE,
+            })
             .init();
     }
 
@@ -200,12 +207,25 @@ pub fn run() -> Result<(), ProgramError> {
     match options.command.unwrap_or_default() {
         Command::Init {} => {
             // mkdir -p .config/readmer/
+            info!("Creating the directory `{}`...", ".config/readmer/");
             std::fs::create_dir_all(".config/readmer/")?;
+            warn!("Created the directory `{}`.", ".config/readmer/");
 
             // cp -f README.md .config/readmer/README.md.liquid
-            std::fs::copy("README.md", ".config/readmer/README.md.liquid")?;
+            if std::fs::exists("README.md")? {
+                info!(
+                    "Copying `{}` to `{}`...",
+                    "README.md", ".config/readmer/README.md.liquid"
+                );
+                std::fs::copy("README.md", ".config/readmer/README.md.liquid")?;
+                warn!(
+                    "Copied `{}` to `{}`.",
+                    "README.md", ".config/readmer/README.md.liquid"
+                );
+            }
 
             // echo "..." > .config/readmer/project.yaml
+            info!("Creating the file `{}`...", ".config/readmer/project.yaml");
             std::fs::write(
                 ".config/readmer/project.yaml",
                 r#"
@@ -213,6 +233,7 @@ pub fn run() -> Result<(), ProgramError> {
                 ---
                 "#,
             )?;
+            warn!("Created the file `{}`.", ".config/readmer/project.yaml");
         },
 
         #[cfg(feature = "unstable")]
