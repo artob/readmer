@@ -1,6 +1,6 @@
 abort("Expected Ruby 3.4+, but got #{RUBY_VERSION}.") if RUBY_VERSION < '3.4.0'
 
-READMER_SUBCOMMANDS = %w[describe render]
+READMER_SUBCOMMANDS = %w[init describe render]
 
 task default: %w[codegen]
 

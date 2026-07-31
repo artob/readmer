@@ -162,11 +162,12 @@ readmer describe
 
 ```shellsession
 $ readmer
-Readmer composes README.md files from Jinja2 or Liquid templates
+Readmer composes README.md files from Liquid or Jinja2 templates
 
 Usage: readmer [OPTIONS] [COMMAND]
 
 Commands:
+  init      Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid
   describe  Describe the current project's metadata in JSON format
   render    Render a template file to standard output
   help      Print this message or the help of the given subcommand(s)
@@ -178,6 +179,21 @@ Options:
   -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
   -V, --version        Print version information
   -h, --help           Print help (see more with '--help')
+```
+
+#### `readmer init`
+
+```shellsession
+$ readmer init --help
+Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid
+
+Usage: readmer init [OPTIONS]
+
+Options:
+      --color <COLOR>  Set the color output mode [default: auto] [possible values: auto, always, never]
+  -d, --debug          Enable debugging output
+  -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
+  -h, --help           Print help
 ```
 
 #### `readmer describe`

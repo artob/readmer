@@ -1,9 +1,10 @@
 $ readmer
-Readmer composes README.md files from Jinja2 or Liquid templates
+Readmer composes README.md files from Liquid or Jinja2 templates
 
 Usage: readmer [OPTIONS] [COMMAND]
 
 Commands:
+  init      Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid
   describe  Describe the current project's metadata in JSON format
   render    Render a template file to standard output
   help      Print this message or the help of the given subcommand(s)
