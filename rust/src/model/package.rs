@@ -74,6 +74,8 @@ impl Package {
     pub fn locate(dir_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let dir_path = dir_path.as_ref();
         for file_name in [
+            #[cfg(feature = "gleam")]
+            "gleam.toml",
             #[cfg(feature = "js")]
             "package.json",
             #[cfg(feature = "dart")]
@@ -102,6 +104,9 @@ impl Package {
 
             #[cfg(feature = "rust")]
             Some("Cargo.toml") => distrib::rust::load_cargo_toml(file_path)?.try_into()?,
+
+            #[cfg(feature = "gleam")]
+            Some("gleam.toml") => distrib::gleam::load_package_config(file_path)?.try_into()?,
 
             #[cfg(feature = "js")]
             Some("package.json") => distrib::js::load_package_json(file_path)?.try_into()?,
@@ -146,6 +151,9 @@ impl Package {
 
 #[cfg(feature = "dart")]
 include!("package/dart.rs");
+
+#[cfg(feature = "gleam")]
+include!("package/gleam.rs");
 
 #[cfg(feature = "js")]
 include!("package/js.rs");

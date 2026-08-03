@@ -36,10 +36,13 @@ jinja2 = ["dep:minijinja"]
 liquid = ["dep:liquid"]
 
 # Languages:
-languages = ["csv", "dart", "js", "python", "ruby", "rust"]
+languages = ["csv", "dart", "elixir", "erlang", "gleam", "js", "python", "ruby", "rust"]
 csv = ["dep:csv"]
 dart = ["distrib/dart"]
-js = ["distrib/js", "dep:package_json_schema"] # FIXME
+elixir = ["distrib/elixir"]
+erlang = ["distrib/erlang"]
+gleam = ["distrib/gleam"]
+js = ["distrib/js"]
 python = ["distrib/python"]
 ruby = ["distrib/ruby"]
 rust = ["distrib/rust"]
@@ -48,7 +51,7 @@ rust = ["distrib/rust"]
 camino = { version = "1.2", default-features = false }
 clientele = { version = "0.3.8", default-features = false, features = ["camino"] }
 derive_more = { version = "2", default-features = false, features = ["display", "from_str"] }
-distrib = { version = "0.0.1", default-features = false, features = ["serde"] }
+distrib = { version = "0.0.3", default-features = false, features = ["serde"] }
 dogma = { version = "0.2.1", default-features = false, features = ["camino"] }
 dyn-clone = { version = "1.0", default-features = false }
 figment2 = { version = "0.11", default-features = false, features = ["env", "yaml"] }
@@ -74,7 +77,7 @@ clap = { version = "4.5", default-features = false, optional = true }
 tracing-subscriber = { version = "0.3", default-features = false, features = ["env-filter", "fmt", "std"], optional = true }
 
 [dev-dependencies]
-distrib = { version = "0", default-features = false }
+distrib = { version = "0.0.3", default-features = false }
 
 # Preview locally with: RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --all-features
 [package.metadata.docs.rs]

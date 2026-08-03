@@ -4,7 +4,7 @@ impl TryFrom<distrib::js::PackageJson> for Package {
     type Error = distrib::js::LoadPackageError;
 
     fn try_from(input: distrib::js::PackageJson) -> Result<Self, Self::Error> {
-        use package_json_schema::{Person, PersonObject, Repository}; // FIXME: distrib::js::
+        use distrib::js::{Person, PersonObject, Repository};
         let js_version = None; // TODO
         Ok(Self {
             language: Language {

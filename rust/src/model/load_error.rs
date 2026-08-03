@@ -26,6 +26,13 @@ impl From<distrib::dart::LoadPubspecError> for LoadError {
     }
 }
 
+#[cfg(feature = "gleam")]
+impl From<distrib::gleam::LoadPackageError> for LoadError {
+    fn from(error: distrib::gleam::LoadPackageError) -> Self {
+        LoadError::Other(error.into())
+    }
+}
+
 #[cfg(feature = "js")]
 impl From<distrib::js::LoadPackageError> for LoadError {
     fn from(error: distrib::js::LoadPackageError) -> Self {
