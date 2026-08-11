@@ -1,3 +1,5 @@
+
+
 # Readmer: READMEs Made Simple<sup>™</sup>
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
@@ -12,7 +14,6 @@
 <sub>
 
 [[Features](#-features)] |
-[[Prerequisites](#%EF%B8%8F-prerequisites)] |
 [[Installation](#%EF%B8%8F-installation)] |
 [[Examples](#-examples)] |
 [[Reference](#-reference)] |
@@ -83,7 +84,7 @@ cargo add --dev readmer
 npm install --save-dev readmer.js
 bun add --dev readmer.js
 pnpm add --save-dev readmer.js
-yarn add --dev readmer.js
+yarn add --save-dev readmer.js
 ```
 </details>
 
