@@ -1,7 +1,7 @@
 # Readmer: READMEs Made Simple<sup>™</sup>
 
 [![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://unlicense.org)
-[![Compatibility](https://img.shields.io/badge/rust-1.88%2B-blue)](https://endoflife.date/rust)
+[![Compatibility](https://img.shields.io/badge/rust-1.97%2B-blue)](https://endoflife.date/rust)
 [![Package on Crates.io](https://img.shields.io/crates/v/readmer)](https://crates.io/crates/readmer)
 [![Documentation](https://img.shields.io/docsrs/readmer?label=docs.rs)](https://docs.rs/readmer)
 
@@ -40,7 +40,7 @@
 
 ## 🛠️ Prerequisites
 
-- [Rust] 1.88+ (2024 edition)
+- [Rust] 1.97+ (2024 edition)
 
 ## ⬇️ Installation
 
@@ -161,13 +161,14 @@ Readmer composes README.md files from Liquid or Jinja2 templates
 Usage: readmer [OPTIONS] [COMMAND]
 
 Commands:
-  init      Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid
-  describe  Describe the current project's metadata in JSON format
+  init      Copy the project's README.md into its workspace template directory
+  describe  Describe the selected project's metadata in JSON format
   render    Render a template file to standard output
   help      Print this message or the help of the given subcommand(s)
 
 Options:
-      --color <COLOR>  Set the color output mode [default: auto] [possible values: auto, always, never]
+      --color <COLOR>  Set the color output mode [default: auto] [possible values: auto, always,
+                       never]
   -d, --debug          Enable debugging output
       --license        Show license information
   -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
@@ -179,32 +180,43 @@ Options:
 
 ```shellsession
 $ readmer init --help
-Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid
+Copy the project's README.md into its workspace template directory
 
-Usage: readmer init [OPTIONS]
+Usage: readmer init [OPTIONS] [PROJECT]
+
+Arguments:
+  [PROJECT]  The project directory to use, relative to $PWD [default: $PWD]
 
 Options:
-      --color <COLOR>  Set the color output mode [default: auto] [possible values: auto, always, never]
-  -d, --debug          Enable debugging output
-  -v, --verbose...     Enable verbose output (may be repeated for more verbosity)
-  -h, --help           Print help
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto,
+                               always, never]
+  -W, --workspace <WORKSPACE>  Workspace root: $PWD or an ancestor, containing the project [default:
+                               $PWD's Git root or $PWD]
+  -d, --debug                  Enable debugging output
+  -v, --verbose...             Enable verbose output (may be repeated for more verbosity)
+  -h, --help                   Print help
+
+Creates README.md.liquid and project.yaml in $WORKSPACE/.config/readmer/<project-prefix>/.
+Existing files are preserved. A missing README.md creates an empty template.
 ```
 
 #### `readmer describe`
 
 ```shellsession
 $ readmer describe --help
-Describe the current project's metadata in JSON format
+Describe the selected project's metadata in JSON format
 
 Usage: readmer describe [OPTIONS] [PROJECT] [PROPERTY]
 
 Arguments:
-  [PROJECT]   The project directory to use [default: $PWD]
+  [PROJECT]   The project directory to use, relative to $PWD [default: $PWD]
   [PROPERTY]  The project property to output [default: all properties]
 
 Options:
-      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
-  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto,
+                               always, never]
+  -W, --workspace <WORKSPACE>  Workspace root: $PWD or an ancestor, containing the project [default:
+                               $PWD's Git root or $PWD]
   -d, --debug                  Enable debugging output
   -o, --output <OUTPUT>        The output format to use [default: json]
   -D, --define <DEFINES>       Define a variable and value to pass to the templating engine
@@ -221,11 +233,14 @@ Render a template file to standard output
 Usage: readmer render [OPTIONS] [INPUTS]...
 
 Arguments:
-  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid]
+  [INPUTS]...  The template files to render [default:
+               $WORKSPACE/.config/readmer/.../README.md.liquid]
 
 Options:
-      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
-  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto,
+                               always, never]
+  -W, --workspace <WORKSPACE>  Workspace root: $PWD or an ancestor, containing the project [default:
+                               $PWD's Git root or $PWD]
   -d, --debug                  Enable debugging output
   -e, --engine <ENGINE>        The templating engine to use [default: auto]
   -D, --define <DEFINES>       Define a variable and value to pass to the templating engine

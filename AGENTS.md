@@ -4,7 +4,7 @@ Readmer generates Markdown from package metadata and Liquid/MiniJinja templates.
 Stay within this repository; do not inspect parent directories.
 
 ## Map
-- `rust/`: working library and CLI; Rust 2024, MSRV 1.88. No root Cargo workspace.
+- `rust/`: working library and CLI; Rust 2024, MSRV 1.97. No root Cargo workspace.
 - `rust/src/main.rs`: `init`, `describe`, `render`; `check`/`build` are `unstable` stubs.
 - `rust/src/{workspace.rs,path/,config.rs}`: workspace discovery, paths, configuration.
 - `rust/src/context/`: template variables and merging.
