@@ -4,11 +4,14 @@ Render a template file to standard output
 Usage: readmer render [OPTIONS] [INPUTS]...
 
 Arguments:
-  [INPUTS]...  The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid]
+  [INPUTS]...  The template files to render [default:
+               $WORKSPACE/.config/readmer/.../README.md.liquid]
 
 Options:
-      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
-  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto,
+                               always, never]
+  -W, --workspace <WORKSPACE>  Workspace root: $PWD or an ancestor, containing the project [default:
+                               $PWD's Git root or $PWD]
   -d, --debug                  Enable debugging output
   -e, --engine <ENGINE>        The templating engine to use [default: auto]
   -D, --define <DEFINES>       Define a variable and value to pass to the templating engine

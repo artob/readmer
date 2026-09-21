@@ -45,7 +45,9 @@ cargo build --locked --features cli
   metadata, update the relevant root `data/properties/*.csv`/`data/variables.csv`.
   Update `data/partials.csv` when adding or changing built-in partials.
 - Package detection checks Cargo last to support polyglot projects. Liquid
-  partial lookup is built-ins, then current directory, then workspace root.
+  partial lookup is built-ins, then selected project directory, then workspace root.
+- Workspace roots must be CWD or an ancestor, and contain the selected project.
+  Discover the workspace from CWD; keep `RootedPath` ancestor-relative.
 - Keep `init` idempotent and preserve existing files. CLI output belongs on
   stdout, diagnostics on stderr. Return errors for invalid user input.
 - Prefer module/type rustdoc over README expansion. Document every public item you

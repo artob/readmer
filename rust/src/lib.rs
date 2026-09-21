@@ -18,7 +18,6 @@ extern crate std;
 pub struct ReadmeDoctests;
 
 use clientele::crates::camino::{Utf8Path, Utf8PathBuf};
-use dogma::{AncestorPath, FromPathError};
 
 mod config;
 pub use config::*;

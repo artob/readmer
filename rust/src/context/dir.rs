@@ -15,7 +15,8 @@ pub struct DirContext {
 }
 
 impl DirContext {
-    /// Loads project, subproject, Git, and package metadata for the current directory.
+    /// Loads metadata for the workspace's selected project, independently of the
+    /// process's current directory. Git and package discovery use that same project.
     ///
     /// Requires `std`. Missing project files or package metadata are optional.
     /// Git remote discovery is best-effort.
@@ -34,7 +35,9 @@ impl DirContext {
         let root_project = workspace_config.project()?;
         output.define("project", root_project.into_json());
 
-        let git_remote_url = Git::default().remote_get_url();
+        let project_path = self.workspace.project_path();
+        let git_remote_url =
+            Git::default().execute_in(&project_path, ["remote", "get-url", "origin"]);
         if let Ok(ref url) = git_remote_url {
             output.define(
                 "git",
@@ -43,15 +46,14 @@ impl DirContext {
             );
         }
 
-        let prefix = &self.workspace.0.down;
+        let prefix = self.workspace.project_prefix();
         if !prefix.as_str().is_empty() {
             // Load `.config/readmer/.../project.yaml` if it exists:
-            let cwd_project = workspace_config.subproject(prefix)?;
-            output.define("subproject", cwd_project.into_json());
+            let subproject = workspace_config.subproject(prefix)?;
+            output.define("subproject", subproject.into_json());
         }
 
-        //let package_path = project.unwrap_or_else(|| ".".into()); // TODO
-        let package = match Package::locate(".") {
+        let package = match Package::locate(&project_path) {
             Ok(package) => Some(package),
             Err(LoadError::NoPackageFound(_)) => None,
             Err(error) => return Err(error),

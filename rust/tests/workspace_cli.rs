@@ -2,29 +2,13 @@
 
 #![cfg(all(feature = "std", feature = "cli"))]
 
+#[path = "support/cli.rs"]
+mod cli;
 mod support;
 
+use cli::{isolated_command, readmer};
 use std::process::Command;
 use support::ProjectDir;
-
-fn isolated_command(program: impl AsRef<std::ffi::OsStr>, project: &ProjectDir) -> Command {
-    let mut command = Command::new(program);
-    command.current_dir(project.path());
-    for (key, _) in std::env::vars_os() {
-        if key.to_string_lossy().starts_with("GIT_")
-            || key.to_string_lossy().starts_with("READMER_")
-        {
-            command.env_remove(key);
-        }
-    }
-    // Keep Git discovery inside the test project, even though it lives in this repository.
-    command.env("GIT_CEILING_DIRECTORIES", project.path().parent().unwrap());
-    command
-}
-
-fn readmer(project: &ProjectDir) -> Command {
-    isolated_command(env!("CARGO_BIN_EXE_readmer"), project)
-}
 
 fn assert_project_without_package(project: &ProjectDir) {
     project.write(

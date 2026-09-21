@@ -1,15 +1,17 @@
 $ readmer describe --help
-Describe the current project's metadata in JSON format
+Describe the selected project's metadata in JSON format
 
 Usage: readmer describe [OPTIONS] [PROJECT] [PROPERTY]
 
 Arguments:
-  [PROJECT]   The project directory to use [default: $PWD]
+  [PROJECT]   The project directory to use, relative to $PWD [default: $PWD]
   [PROPERTY]  The project property to output [default: all properties]
 
 Options:
-      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto, always, never]
-  -W, --workspace <WORKSPACE>  The workspace directory to use [default: $WORKSPACE]
+      --color <COLOR>          Set the color output mode [default: auto] [possible values: auto,
+                               always, never]
+  -W, --workspace <WORKSPACE>  Workspace root: $PWD or an ancestor, containing the project [default:
+                               $PWD's Git root or $PWD]
   -d, --debug                  Enable debugging output
   -o, --output <OUTPUT>        The output format to use [default: json]
   -D, --define <DEFINES>       Define a variable and value to pass to the templating engine

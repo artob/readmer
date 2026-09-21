@@ -30,7 +30,7 @@ pub type FilePartials = LazyCompiler<FileSource>;
 /// [`PartialSource::try_get`] intentionally discards errors for optional lookup.
 #[derive(Clone, Debug, Default)]
 pub struct FileSource {
-    dirs: Vec<RootedPath>,
+    dirs: Vec<Utf8PathBuf>,
 }
 
 #[derive(Debug, ThisError)]
@@ -42,7 +42,13 @@ struct PartialFileError {
 }
 
 impl FileSource {
+    /// Searches ancestor-relative roots in order. Relative paths are interpreted
+    /// from the current directory at lookup time. Requires `liquid` and `std`.
     pub fn new(dirs: Vec<RootedPath>) -> Self {
+        Self::from_paths(dirs.into_iter().map(|dir| dir.join("")).collect())
+    }
+
+    pub(super) fn from_paths(dirs: Vec<Utf8PathBuf>) -> Self {
         Self { dirs }
     }
 

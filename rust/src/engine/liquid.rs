@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::{Context, Engine, RenderError, RootedPath, Workspace};
+use crate::{Context, Engine, RenderError, Workspace};
 use alloc::{
     boxed::Box,
     collections::BTreeMap,
@@ -13,7 +13,7 @@ use liquid::{
     reflection::ParserReflection,
 };
 
-/// Liquid renderer with built-in, current-directory, and workspace partials.
+/// Liquid renderer with built-in, selected-project, and workspace partials.
 ///
 /// Requires `liquid` and `std`. Missing partials allow fallback lookup; loading
 /// or parsing failures in existing partials are returned with their cause.
@@ -45,9 +45,9 @@ impl Engine for LiquidEngine {
     fn render(&mut self, name: String, context: Box<dyn Context>) -> Result<String, RenderError> {
         let mut partials = stack::StackPartials::empty();
         partials.add(embed::EmbedSource::default());
-        partials.add(file::FileSource::new(vec![
-            RootedPath::default(),
-            self.workspace.path().clone(),
+        partials.add(file::FileSource::from_paths(vec![
+            self.workspace.project_path(),
+            self.workspace.join("."),
         ]));
 
         let template_data = self.templates.get(&name).ok_or(RenderError::NotFound)?;

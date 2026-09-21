@@ -5,14 +5,18 @@
 use clientele::{
     StandardOptions,
     SysexitsError::{self, *},
-    crates::camino::Utf8PathBuf,
+    crates::camino::{Utf8Path, Utf8PathBuf},
     crates::clap::{Parser, Subcommand},
 };
 use readmer::{
     Context, DirContext, Engine, RenderError, Workspace,
     model::{LoadError, Package, Project},
 };
-use std::{default, path::PathBuf};
+use std::{
+    default,
+    io::{self, Write},
+    path::PathBuf,
+};
 use thiserror::Error;
 use tracing::{error, info, warn};
 
@@ -30,9 +34,19 @@ struct Options {
 
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// Copy ./README.md to $WORKSPACE/.config/readmer/README.md.liquid.
+    /// Copy the project's README.md into its workspace template directory.
     #[clap(aliases = ["i", "in", "ini", "install"])]
-    Init {},
+    #[clap(
+        after_help = "Creates README.md.liquid and project.yaml in $WORKSPACE/.config/readmer/<project-prefix>/.\nExisting files are preserved. A missing README.md creates an empty template."
+    )]
+    Init {
+        /// The project directory to use, relative to $PWD [default: $PWD].
+        project: Option<Utf8PathBuf>,
+
+        /// Workspace root: $PWD or an ancestor, containing the project [default: $PWD's Git root or $PWD].
+        #[clap(short = 'W', long)]
+        workspace: Option<Utf8PathBuf>,
+    },
 
     /// TODO: implement `readmer check`
     #[cfg(feature = "unstable")]
@@ -47,18 +61,18 @@ enum Command {
         outputs: Vec<Utf8PathBuf>,
     },
 
-    /// Describe the current project's metadata in JSON format.
+    /// Describe the selected project's metadata in JSON format.
     #[clap(aliases = ["d", "de", "des", "desc"])]
     Describe {
-        /// The project directory to use [default: $PWD].
+        /// The project directory to use, relative to $PWD [default: $PWD].
         project: Option<Utf8PathBuf>,
 
         /// The project property to output [default: all properties].
         property: Option<String>,
 
-        /// The workspace directory to use [default: $WORKSPACE].
+        /// Workspace root: $PWD or an ancestor, containing the project [default: $PWD's Git root or $PWD].
         #[clap(short = 'W', long)]
-        workspace: Option<Workspace>,
+        workspace: Option<Utf8PathBuf>,
 
         /// The output format to use.
         #[clap(short, long, default_value = "json")]
@@ -75,9 +89,9 @@ enum Command {
         /// The template files to render [default: $WORKSPACE/.config/readmer/.../README.md.liquid].
         inputs: Vec<Utf8PathBuf>,
 
-        /// The workspace directory to use [default: $WORKSPACE].
+        /// Workspace root: $PWD or an ancestor, containing the project [default: $PWD's Git root or $PWD].
         #[clap(short = 'W', long)]
-        workspace: Option<Workspace>,
+        workspace: Option<Utf8PathBuf>,
 
         /// The templating engine to use [default: auto].
         #[clap(short, long)]
@@ -137,6 +151,7 @@ impl From<ProgramError> for SysexitsError {
     }
 }
 
+/// CLI entry point returning a sysexits-style process status.
 pub fn main() -> SysexitsError {
     use ProgramError::*;
 
@@ -151,6 +166,11 @@ pub fn main() -> SysexitsError {
     }
 }
 
+/// Parses arguments, resolves project/workspace paths, and executes the command.
+///
+/// # Errors
+///
+/// Returns errors for invalid targets, metadata, templates, or filesystem operations.
 pub fn run() -> Result<(), ProgramError> {
     use ProgramError::*;
 
@@ -205,45 +225,9 @@ pub fn run() -> Result<(), ProgramError> {
     let mut result = Ok(());
 
     match options.command.unwrap_or_default() {
-        Command::Init {} => {
-            // mkdir -p .config/readmer/
-            if !std::fs::exists(".config/readmer")? {
-                info!("Creating the directory `{}`...", ".config/readmer/");
-                std::fs::create_dir_all(".config/readmer/")?;
-                warn!("Created the directory `{}`.", ".config/readmer/");
-            }
-
-            // cp -f README.md .config/readmer/README.md.liquid
-            if !std::fs::exists(".config/readmer/README.md.liquid")? {
-                if std::fs::exists("README.md")? {
-                    info!(
-                        "Copying `{}` to `{}`...",
-                        "README.md", ".config/readmer/README.md.liquid"
-                    );
-                    std::fs::copy("README.md", ".config/readmer/README.md.liquid")?;
-                    warn!(
-                        "Copied `{}` to `{}`.",
-                        "README.md", ".config/readmer/README.md.liquid"
-                    );
-                } else {
-                    info!(
-                        "Creating the file `{}`...",
-                        ".config/readmer/README.md.liquid"
-                    );
-                    std::fs::write(".config/readmer/README.md.liquid", "")?;
-                    warn!("Created the file `{}`.", ".config/readmer/README.md.liquid");
-                }
-            }
-
-            // echo "..." > .config/readmer/project.yaml
-            if !std::fs::exists(".config/readmer/project.yaml")? {
-                info!("Creating the file `{}`...", ".config/readmer/project.yaml");
-                std::fs::write(
-                    ".config/readmer/project.yaml",
-                    "# See: https://github.com/artob/readmer#template-variables\n---\n",
-                )?;
-                warn!("Created the file `{}`.", ".config/readmer/project.yaml");
-            }
+        Command::Init { project, workspace } => {
+            let workspace = resolve_workspace(project, workspace)?;
+            init_project(&workspace)?;
         },
 
         #[cfg(feature = "unstable")]
@@ -262,13 +246,13 @@ pub fn run() -> Result<(), ProgramError> {
         },
 
         Command::Describe {
-            project: _, // FIXME: reimplement `readmer describe --project`
+            project,
             property,
             workspace,
             output,
             defines,
         } => {
-            let workspace = workspace.map(Ok).unwrap_or_else(|| Workspace::locate())?;
+            let workspace = resolve_workspace(project, workspace)?;
             let mut context = DirContext { workspace }.load()?;
             for define in defines {
                 let (k, v) = define
@@ -300,7 +284,7 @@ pub fn run() -> Result<(), ProgramError> {
             engine,
             defines,
         } => {
-            let workspace = workspace.map(Ok).unwrap_or_else(|| Workspace::locate())?;
+            let workspace = resolve_workspace(None, workspace)?;
             let mut context = DirContext {
                 workspace: workspace.clone(),
             }
@@ -337,8 +321,8 @@ pub fn run() -> Result<(), ProgramError> {
                         // Unqualified paths are interpreted relative to the
                         // workspace's prefixed configuration directory
                         // (`$WORKSPACE/.config/readmer/$PREFIX/`), where the
-                        // prefix is the relative path to the workspace root:
-                        let input_name = workspace.as_ref().down.join(input_path);
+                        // prefix is the project's path within the workspace:
+                        let input_name = workspace.project_prefix().join(input_path);
                         let input_path = workspace.config_path().join(&input_name);
                         (input_name.into_string(), input_path)
                     }
@@ -380,4 +364,95 @@ pub fn run() -> Result<(), ProgramError> {
     };
 
     result
+}
+
+// Resolve both arguments from the invocation directory before any command I/O.
+fn resolve_workspace(
+    project: Option<Utf8PathBuf>,
+    root: Option<Utf8PathBuf>,
+) -> io::Result<Workspace> {
+    let project = project.unwrap_or_else(|| ".".into());
+    match root {
+        Some(root) => Workspace::new(root, project),
+        None => Workspace::locate_from(project),
+    }
+}
+
+// Nested projects share the workspace configuration tree, with project.yaml
+// alongside their own template (and therefore exposed as subproject metadata).
+fn init_project(workspace: &Workspace) -> io::Result<()> {
+    let directory = workspace.project_config_path();
+    let new_directory = !directory.try_exists().map_err(|error| {
+        io::Error::new(
+            error.kind(),
+            format!("cannot inspect `{directory}`: {error}"),
+        )
+    })?;
+    std::fs::create_dir_all(&directory).map_err(|error| {
+        io::Error::new(
+            error.kind(),
+            format!("cannot create directory `{directory}`: {error}"),
+        )
+    })?;
+    if new_directory {
+        warn!("Created the directory `{directory}`.");
+    }
+
+    let template = directory.join("README.md.liquid");
+    if !existing_file(&template)? {
+        let readme = workspace.project_path().join("README.md");
+        let contents = if existing_file(&readme)? {
+            std::fs::read(&readme).map_err(|error| {
+                io::Error::new(error.kind(), format!("cannot read `{readme}`: {error}"))
+            })?
+        } else {
+            Vec::new()
+        };
+        create_file(&template, &contents)?;
+    }
+    create_file(
+        &directory.join("project.yaml"),
+        b"# See: https://github.com/artob/readmer#template-variables\n---\n",
+    )
+}
+
+fn existing_file(path: &Utf8Path) -> io::Result<bool> {
+    match std::fs::symlink_metadata(path) {
+        Ok(metadata) if metadata.is_dir() => Err(io::Error::new(
+            io::ErrorKind::IsADirectory,
+            format!("expected a file, found a directory: `{path}`"),
+        )),
+        Ok(_) => Ok(true),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(false),
+        Err(error) => Err(io::Error::new(
+            error.kind(),
+            format!("cannot inspect `{path}`: {error}"),
+        )),
+    }
+}
+
+fn create_file(path: &Utf8Path, contents: &[u8]) -> io::Result<()> {
+    if existing_file(path)? {
+        return Ok(());
+    }
+    info!("Creating the file `{path}`...");
+    match std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)
+    {
+        Ok(mut file) => {
+            file.write_all(contents).map_err(|error| {
+                io::Error::new(error.kind(), format!("cannot write `{path}`: {error}"))
+            })?;
+            warn!("Created the file `{path}`.");
+            Ok(())
+        },
+        // Preserve files created by another invocation after the existence check.
+        Err(error) if error.kind() == io::ErrorKind::AlreadyExists => Ok(()),
+        Err(error) => Err(io::Error::new(
+            error.kind(),
+            format!("cannot create `{path}`: {error}"),
+        )),
+    }
 }
