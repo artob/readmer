@@ -33,7 +33,7 @@ unstable = []
 # Engines:
 engines = ["jinja2", "liquid"]
 jinja2 = ["dep:minijinja"]
-liquid = ["dep:liquid"]
+liquid = ["dep:liquid", "dep:liquid-core"]
 
 # Languages:
 languages = ["csv", "dart", "elixir", "erlang", "gleam", "js", "python", "ruby", "rust"]
@@ -41,7 +41,7 @@ csv = ["dep:csv"]
 dart = ["distrib/dart"]
 elixir = ["distrib/elixir"]
 erlang = ["distrib/erlang"]
-gleam = ["distrib/gleam"]
+gleam = ["distrib/gleam", "dep:toml"]
 js = ["distrib/js"]
 python = ["distrib/python"]
 ruby = ["distrib/ruby"]
@@ -66,11 +66,13 @@ tracing = { version = "0.1", default-features = false }
 
 # Engines:
 liquid = { version = "0.26", default-features = false, optional = true }
+liquid-core = { version = "0.26", default-features = false, optional = true }
 minijinja = { version = "2.21", default-features = false, features = ["json", "serde"], optional = true }
 
 # Languages:
 csv = { version = "1.4", default-features = false, optional = true }
 package_json_schema = { version = "0.3", default-features = false, optional = true }
+toml = { version = "1", default-features = false, features = ["parse", "serde"], optional = true }
 
 # CLI:
 clap = { version = "4.5", default-features = false, optional = true }

@@ -135,5 +135,9 @@ fn package_detection_skips_tool_only_manifests() {
 
     // Parse failures are not mistaken for absent package metadata.
     project.write("pyproject.toml", "[project\n");
-    assert!(matches!(Package::locate(path), Err(LoadError::Other(_))));
+    let error = Package::locate(path).unwrap_err();
+    assert!(
+        matches!(&error, LoadError::AtPath { path, .. } if path.file_name() == Some("pyproject.toml"))
+    );
+    assert!(std::error::Error::source(&error).is_some());
 }

@@ -80,7 +80,8 @@ impl Package {
     /// # Errors
     ///
     /// Returns [`LoadError::NoPackageFound`] if no package is found, or propagates
-    /// a load error for an existing manifest that cannot be read or parsed.
+    /// [`LoadError::AtPath`] for a manifest that cannot be inspected, read, or parsed.
+    #[cfg(feature = "std")]
     pub fn locate(dir_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let dir_path = dir_path.as_ref();
         for file_name in [
@@ -99,11 +100,14 @@ impl Package {
             "Cargo.toml",
         ] {
             let file_path = dir_path.join(file_name);
-            if file_path.exists() {
-                match Self::load(file_path) {
-                    Err(LoadError::NoPackageFound(_)) => continue,
-                    result => return result,
-                }
+            match std::fs::symlink_metadata(&file_path) {
+                Ok(_) => {},
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(error) => return Err(LoadError::at_path(file_path, error)),
+            }
+            match Self::load(file_path) {
+                Err(LoadError::NoPackageFound(_)) => continue,
+                result => return result,
             }
         }
         Err(LoadError::NoPackageFound(dir_path.into()))
@@ -119,13 +123,29 @@ impl Package {
     ///
     /// Returns [`LoadError::NoPackageFound`] with the manifest path when `[package]`
     /// or `[project]` is absent. Returns [`LoadError::UnknownPackageFormat`] for
-    /// unrecognized or disabled formats, and a load error for unreadable, malformed,
-    /// or unresolved metadata.
+    /// unrecognized or disabled formats, and [`LoadError::AtPath`] for unreadable,
+    /// malformed, or unresolved metadata, preserving the underlying error.
+    #[cfg(feature = "std")]
     pub fn load(file_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let file_path = file_path.as_ref();
+        Self::load_manifest(file_path).map_err(|error| match error {
+            LoadError::NoPackageFound(_) | LoadError::UnknownPackageFormat(_) => error,
+            error => LoadError::at_path(file_path, error),
+        })
+    }
+
+    #[cfg(feature = "std")]
+    fn load_manifest(file_path: &Utf8Path) -> Result<Self, LoadError> {
+        // distrib 0.0.3's JS, Dart, Ruby, and Gleam file loaders unwrap parser
+        // failures. Parse their existing metadata types fallibly here instead.
         Ok(match file_path.file_name() {
             #[cfg(feature = "ruby")]
-            Some(".gemspec.yaml") => distrib::ruby::load_gemspec(file_path)?.try_into()?, // TODO
+            Some(".gemspec.yaml") => {
+                let manifest: distrib::ruby::Gemspec =
+                    Yaml::from_str(&Self::read_manifest(file_path)?)
+                        .map_err(|error| LoadError::Other(error.into()))?;
+                manifest.try_into()?
+            },
 
             #[cfg(feature = "rust")]
             Some("Cargo.toml") => {
@@ -137,13 +157,27 @@ impl Package {
             },
 
             #[cfg(feature = "gleam")]
-            Some("gleam.toml") => distrib::gleam::load_package_config(file_path)?.try_into()?,
+            Some("gleam.toml") => {
+                let manifest: distrib::gleam::PackageConfig =
+                    toml::from_str(&Self::read_manifest(file_path)?)
+                        .map_err(|error| LoadError::Other(error.into()))?;
+                manifest.try_into()?
+            },
 
             #[cfg(feature = "js")]
-            Some("package.json") => distrib::js::load_package_json(file_path)?.try_into()?,
+            Some("package.json") => {
+                let manifest = distrib::js::PackageJson::try_from(Self::read_manifest(file_path)?)
+                    .map_err(|error| LoadError::Other(error.into()))?;
+                manifest.try_into()?
+            },
 
             #[cfg(feature = "dart")]
-            Some("pubspec.yaml") => distrib::dart::load_pubspec(file_path)?.try_into()?,
+            Some("pubspec.yaml") => {
+                let manifest: distrib::dart::Pubspec =
+                    Yaml::from_str(&Self::read_manifest(file_path)?)
+                        .map_err(|error| LoadError::Other(error.into()))?;
+                manifest.try_into()?
+            },
 
             #[cfg(feature = "python")]
             Some("pyproject.toml") => {
@@ -158,6 +192,14 @@ impl Package {
                 return Err(LoadError::UnknownPackageFormat(file_path.into()));
             },
         })
+    }
+
+    #[cfg(all(
+        feature = "std",
+        any(feature = "js", feature = "dart", feature = "ruby", feature = "gleam")
+    ))]
+    fn read_manifest(file_path: &Utf8Path) -> Result<String, LoadError> {
+        std::fs::read_to_string(file_path).map_err(|error| LoadError::Other(error.into()))
     }
 
     pub fn to_json(&self) -> serde_json::Value {

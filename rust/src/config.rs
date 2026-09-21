@@ -1,6 +1,9 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::{Utf8Path, Utf8PathBuf, model::Project};
+use crate::{
+    Utf8Path, Utf8PathBuf,
+    model::{LoadError, Project},
+};
 use alloc::string::String;
 use std::{
     io::{Error, ErrorKind, Result},
@@ -11,12 +14,31 @@ use std::{
 pub struct Config(pub(crate) Utf8PathBuf);
 
 impl Config {
-    pub fn project(&self) -> Option<Project> {
-        Project::load(self.path_to_project_yaml()).ok()
+    /// Loads workspace project metadata and `READMER_` environment overrides.
+    ///
+    /// Requires `std`. Missing YAML is optional; see [`Project::load`].
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LoadError::AtPath`] for unreadable or invalid metadata.
+    #[cfg(feature = "std")]
+    pub fn project(&self) -> core::result::Result<Project, LoadError> {
+        Project::load(self.path_to_project_yaml())
     }
 
-    pub fn subproject(&self, path: impl AsRef<Utf8Path>) -> Option<Project> {
-        Project::load(self.path_to_subproject_yaml(path)).ok()
+    /// Loads metadata for a workspace-relative subproject and environment overrides.
+    ///
+    /// Requires `std`. Missing YAML is optional; see [`Project::load`].
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LoadError::AtPath`] for unreadable or invalid metadata.
+    #[cfg(feature = "std")]
+    pub fn subproject(
+        &self,
+        path: impl AsRef<Utf8Path>,
+    ) -> core::result::Result<Project, LoadError> {
+        Project::load(self.path_to_subproject_yaml(path))
     }
 
     pub fn has_template(&self, name: impl AsRef<str>) -> Result<bool> {

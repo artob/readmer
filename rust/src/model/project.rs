@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::Utf8Path;
+use crate::{Utf8Path, model::LoadError};
 use alloc::{string::String, vec::Vec};
 use figment2::{
     Figment,
@@ -28,11 +28,34 @@ pub struct Project {
 }
 
 impl Project {
-    pub fn load(path: impl AsRef<Utf8Path>) -> Result<Self, figment2::Error> {
-        Figment::new()
-            .merge(Yaml::file(path.as_ref()))
+    /// Loads optional YAML metadata at exactly `path`, then applies `READMER_`
+    /// environment overrides. Requires `std`.
+    ///
+    /// A missing file is treated as empty metadata, allowing environment-only
+    /// configuration. Ancestor directories are never searched. An existing but
+    /// unreadable file, including a dangling symlink, is an error.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LoadError::AtPath`] with the path and underlying error for
+    /// filesystem failures, invalid YAML, or invalid metadata/environment types.
+    #[cfg(feature = "std")]
+    pub fn load(path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
+        let path = path.as_ref();
+        let mut figment = Figment::new();
+        match std::fs::symlink_metadata(path) {
+            Ok(_) => {
+                let contents = std::fs::read_to_string(path)
+                    .map_err(|error| LoadError::at_path(path, error))?;
+                figment = figment.merge(Yaml::string(&contents));
+            },
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
+            Err(error) => return Err(LoadError::at_path(path, error)),
+        }
+        figment
             .merge(Env::prefixed("READMER_"))
             .extract()
+            .map_err(|error| LoadError::at_path(path, error))
     }
 
     pub fn to_json(&self) -> Value {

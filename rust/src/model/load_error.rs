@@ -7,7 +7,7 @@ use alloc::{
 };
 use thiserror::Error;
 
-/// An error encountered while finding or loading package metadata.
+/// An error encountered while finding or loading project or package metadata.
 #[derive(Debug, Error)]
 pub enum LoadError {
     /// No package was found in the directory or in the manifest at this path.
@@ -20,9 +20,31 @@ pub enum LoadError {
     #[error("unknown package format: {0}")]
     UnknownPackageFormat(Utf8PathBuf),
 
+    /// Metadata could not be inspected, read, parsed, or converted at this path.
+    #[error("failed to load `{path}`: {source}")]
+    AtPath {
+        /// The metadata file being loaded or inspected.
+        path: Utf8PathBuf,
+        /// The underlying filesystem, parser, or conversion failure.
+        #[source]
+        source: Box<dyn core::error::Error>,
+    },
+
     /// An adapter failed to read, parse, resolve, or convert package metadata.
     #[error(transparent)]
     Other(#[from] Box<dyn core::error::Error>),
+}
+
+impl LoadError {
+    pub(crate) fn at_path(
+        path: impl Into<Utf8PathBuf>,
+        source: impl core::error::Error + 'static,
+    ) -> Self {
+        Self::AtPath {
+            path: path.into(),
+            source: Box::new(source),
+        }
+    }
 }
 
 #[cfg(feature = "dart")]

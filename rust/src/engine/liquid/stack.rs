@@ -22,6 +22,8 @@ use std::{
 
 pub type StackPartials = LazyCompiler<StackSource>;
 
+/// Ordered partial sources. The first source containing a name is authoritative,
+/// even if loading it fails; lower-priority sources cannot hide that failure.
 #[derive(Debug)]
 pub struct StackSource {
     sources: SendWrapper<Vec<Box<dyn PartialSource>>>,
@@ -55,12 +57,17 @@ impl PartialSource for StackSource {
     }
 
     fn try_get<'a>(&'a self, name: &str) -> Option<Cow<'a, str>> {
+        self.get(name).ok()
+    }
+
+    fn get<'a>(&'a self, name: &str) -> liquid_core::Result<Cow<'a, str>> {
         tracing::debug!("Resolving the partial {:?}...", name);
         for source in self.sources.iter() {
-            if let Some(content) = source.try_get(name) {
-                return Some(content);
+            if source.contains(name) {
+                return source.get(name);
             }
         }
-        None
+        Err(liquid::Error::with_msg("Unknown partial-template")
+            .context("requested partial", name.to_string()))
     }
 }

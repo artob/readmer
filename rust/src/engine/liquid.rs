@@ -13,6 +13,10 @@ use liquid::{
     reflection::ParserReflection,
 };
 
+/// Liquid renderer with built-in, current-directory, and workspace partials.
+///
+/// Requires `liquid` and `std`. Missing partials allow fallback lookup; loading
+/// or parsing failures in existing partials are returned with their cause.
 #[derive(Clone, Debug)]
 pub struct LiquidEngine {
     workspace: Workspace,
@@ -48,7 +52,7 @@ impl Engine for LiquidEngine {
 
         let template_data = self.templates.get(&name).ok_or(RenderError::NotFound)?;
         let template = liquid::ParserBuilder::with_stdlib()
-            .partials(partials)
+            .partials(compiler::ErrorPreservingCompiler(partials))
             .build()?
             .parse(template_data)?;
 
@@ -61,6 +65,8 @@ impl Engine for LiquidEngine {
         Ok(output) // always newline-terminated
     }
 }
+
+mod compiler;
 
 mod embed;
 pub use embed::*;

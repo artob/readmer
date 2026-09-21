@@ -18,13 +18,27 @@ use liquid::{
 use std::{
     fs::read_to_string,
     io::{Error, ErrorKind, Result},
+    sync::Arc,
 };
+use thiserror::Error as ThisError;
 
 pub type FilePartials = LazyCompiler<FileSource>;
 
+/// Filesystem partials searched in order, with fallback only for absent entries.
+///
+/// Requires `std` and `liquid`. Use [`PartialSource::get`] for path-aware errors;
+/// [`PartialSource::try_get`] intentionally discards errors for optional lookup.
 #[derive(Clone, Debug, Default)]
 pub struct FileSource {
     dirs: Vec<RootedPath>,
+}
+
+#[derive(Debug, ThisError)]
+#[error("failed to load partial `{path}`: {source}")]
+struct PartialFileError {
+    path: Utf8PathBuf,
+    #[source]
+    source: Error,
 }
 
 impl FileSource {
@@ -35,18 +49,18 @@ impl FileSource {
     fn load(&self, name: &str) -> Result<String> {
         for dir in &self.dirs {
             let path = dir.join(name);
-            if let Ok(output) = self.load_from_path(path) {
-                return Ok(output);
-            }
+            let result = match std::fs::symlink_metadata(&path) {
+                Ok(_) => self.load_from_path(path.clone()),
+                Err(error) if error.kind() == ErrorKind::NotFound => continue,
+                Err(error) => Err(error),
+            };
+            return result
+                .map_err(|source| Error::new(source.kind(), PartialFileError { path, source }));
         }
         Err(ErrorKind::NotFound.into())
     }
 
     fn load_from_path(&self, path: Utf8PathBuf) -> Result<String> {
-        if !path.try_exists()? {
-            return Err(ErrorKind::NotFound.into());
-        }
-
         let languages = detect_language_by_filename(&path)
             .map_err(|error| Error::new(ErrorKind::InvalidFilename, error))?;
         if let Some(language) = languages.first() {
@@ -73,24 +87,23 @@ impl FileSource {
                     .has_headers(true)
                     .from_path(path)?;
                 output.push_str("{% raw -%}");
-                if let Ok(headers) = reader.headers() {
-                    output.push('|');
-                    for column in headers {
-                        let column = column.trim_ascii_start();
-                        output.push(' ');
-                        output.push_str(column);
-                        output.push_str(" |");
-                    }
-                    output.push('\n');
-                    output.push('|');
-                    for column in headers {
-                        let column = column.trim_ascii_start();
-                        output.push(' ');
-                        output.push_str(&"-".repeat(column.len()));
-                        output.push_str(" |");
-                    }
-                    output.push('\n');
+                let headers = reader.headers()?;
+                output.push('|');
+                for column in headers {
+                    let column = column.trim_ascii_start();
+                    output.push(' ');
+                    output.push_str(column);
+                    output.push_str(" |");
                 }
+                output.push('\n');
+                output.push('|');
+                for column in headers {
+                    let column = column.trim_ascii_start();
+                    output.push(' ');
+                    output.push_str(&"-".repeat(column.len()));
+                    output.push_str(" |");
+                }
+                output.push('\n');
                 for record in reader.records() {
                     let record = record?;
                     output.push('|');
@@ -151,12 +164,12 @@ impl FileSource {
 
 impl PartialSource for FileSource {
     fn contains(&self, name: &str) -> bool {
-        for dir in &self.dirs {
-            if dir.join(name).exists() {
-                return true;
-            }
-        }
-        false
+        self.dirs
+            .iter()
+            .any(|dir| match std::fs::symlink_metadata(dir.join(name)) {
+                Ok(_) => true,
+                Err(error) => error.kind() != ErrorKind::NotFound,
+            })
     }
 
     fn names<'a>(&'a self) -> Vec<&'a str> {
@@ -174,5 +187,14 @@ impl PartialSource for FileSource {
                 Some(Cow::Owned(content))
             },
         }
+    }
+
+    fn get<'a>(&'a self, name: &str) -> liquid_core::Result<Cow<'a, str>> {
+        self.load(name).map(Cow::Owned).map_err(|error| {
+            liquid::Error::with_msg("Failed to load partial")
+                .context("partial", name.to_string())
+                .context("cause", error.to_string())
+                .cause(Arc::new(error))
+        })
     }
 }

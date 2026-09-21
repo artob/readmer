@@ -15,16 +15,24 @@ pub struct DirContext {
 }
 
 impl DirContext {
+    /// Loads project, subproject, Git, and package metadata for the current directory.
+    ///
+    /// Requires `std`. Missing project files or package metadata are optional.
+    /// Git remote discovery is best-effort.
+    ///
+    /// # Errors
+    ///
+    /// Propagates errors from present but unreadable or invalid metadata instead
+    /// of rendering with an incomplete context.
+    #[cfg(feature = "std")]
     pub fn load(&self) -> Result<TempContext, LoadError> {
         let mut output = TempContext::new();
 
         let workspace_config = self.workspace.config();
 
         // Load `.config/readmer/project.yaml` if it exists:
-        let root_project = workspace_config.project();
-        if let Some(project) = root_project {
-            output.define("project", project.into_json());
-        }
+        let root_project = workspace_config.project()?;
+        output.define("project", root_project.into_json());
 
         let git_remote_url = Git::default().remote_get_url();
         if let Ok(ref url) = git_remote_url {
@@ -38,14 +46,17 @@ impl DirContext {
         let prefix = &self.workspace.0.down;
         if !prefix.as_str().is_empty() {
             // Load `.config/readmer/.../project.yaml` if it exists:
-            let cwd_project = workspace_config.subproject(prefix);
-            if let Some(project) = cwd_project {
-                output.define("subproject", project.into_json());
-            }
+            let cwd_project = workspace_config.subproject(prefix)?;
+            output.define("subproject", cwd_project.into_json());
         }
 
         //let package_path = project.unwrap_or_else(|| ".".into()); // TODO
-        if let Some(package) = Package::locate(".").ok() {
+        let package = match Package::locate(".") {
+            Ok(package) => Some(package),
+            Err(LoadError::NoPackageFound(_)) => None,
+            Err(error) => return Err(error),
+        };
+        if let Some(package) = package {
             if let Some(link) = package.repository.as_ref()
                 && link.contains("github.com")
             {
