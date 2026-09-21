@@ -47,7 +47,8 @@ impl FileSource {
             return Err(ErrorKind::NotFound.into());
         }
 
-        let languages = detect_language_by_filename(&path).unwrap(); // FIXME
+        let languages = detect_language_by_filename(&path)
+            .map_err(|error| Error::new(ErrorKind::InvalidFilename, error))?;
         if let Some(language) = languages.first() {
             let code = read_to_string(path)?;
             return Ok(self.format_code(language.name, code));
@@ -117,7 +118,8 @@ impl FileSource {
             },
 
             Some("json") | Some(_) => {
-                let languages = detect_language_by_extension(&path).unwrap(); // FIXME
+                let languages = detect_language_by_extension(&path)
+                    .map_err(|error| Error::new(ErrorKind::InvalidFilename, error))?;
                 let Some(language) = languages.first() else {
                     return Err(ErrorKind::InvalidFilename.into());
                 };

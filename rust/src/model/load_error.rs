@@ -7,14 +7,20 @@ use alloc::{
 };
 use thiserror::Error;
 
+/// An error encountered while finding or loading package metadata.
 #[derive(Debug, Error)]
 pub enum LoadError {
+    /// No package was found in the directory or in the manifest at this path.
+    ///
+    /// A valid Cargo virtual workspace or tool-only Python manifest has no package.
     #[error("no package found: {0}")]
     NoPackageFound(Utf8PathBuf),
 
+    /// The manifest filename is unrecognized or its language feature is disabled.
     #[error("unknown package format: {0}")]
     UnknownPackageFormat(Utf8PathBuf),
 
+    /// An adapter failed to read, parse, resolve, or convert package metadata.
     #[error(transparent)]
     Other(#[from] Box<dyn core::error::Error>),
 }

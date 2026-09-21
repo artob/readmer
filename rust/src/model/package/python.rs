@@ -1,11 +1,17 @@
 // This is free and unencumbered software released into the public domain.
 
+/// Converts Python package metadata with the `python` feature enabled.
+///
+/// Returns a load error when `[project]` is absent, as in a tool-only manifest.
+/// This conversion performs no filesystem access.
 impl TryFrom<distrib::python::PyprojectToml> for Package {
     type Error = distrib::python::LoadPyprojectError;
 
     fn try_from(input: distrib::python::PyprojectToml) -> Result<Self, Self::Error> {
         use distrib::python::{Contact, License};
-        let project = input.project.unwrap();
+        let project = input
+            .project
+            .ok_or_else(|| Self::Error::Other("Python manifest has no [project] section".into()))?;
         let project_urls = project.urls.unwrap_or_default();
         let python_version = project
             .requires_python

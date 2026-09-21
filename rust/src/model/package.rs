@@ -71,6 +71,16 @@ pub struct Package {
 }
 
 impl Package {
+    /// Loads the first package found in a directory using enabled language adapters.
+    ///
+    /// Detection checks Gleam, JavaScript, Dart, Python, Ruby, then Rust. Manifests
+    /// without a package section (such as tool-only Python manifests and Cargo
+    /// virtual workspaces) are skipped. Filesystem access requires `std`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LoadError::NoPackageFound`] if no package is found, or propagates
+    /// a load error for an existing manifest that cannot be read or parsed.
     pub fn locate(dir_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let dir_path = dir_path.as_ref();
         for file_name in [
@@ -90,12 +100,27 @@ impl Package {
         ] {
             let file_path = dir_path.join(file_name);
             if file_path.exists() {
-                return Self::load(file_path);
+                match Self::load(file_path) {
+                    Err(LoadError::NoPackageFound(_)) => continue,
+                    result => return result,
+                }
             }
         }
         Err(LoadError::NoPackageFound(dir_path.into()))
     }
 
+    /// Loads package metadata from a manifest using its enabled language adapter.
+    ///
+    /// Cargo workspace inheritance is resolved before converting package metadata.
+    /// Filesystem access requires `std`; each format also requires its language
+    /// feature, such as `rust` for Cargo or `python` for pyproject manifests.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LoadError::NoPackageFound`] with the manifest path when `[package]`
+    /// or `[project]` is absent. Returns [`LoadError::UnknownPackageFormat`] for
+    /// unrecognized or disabled formats, and a load error for unreadable, malformed,
+    /// or unresolved metadata.
     pub fn load(file_path: impl AsRef<Utf8Path>) -> Result<Self, LoadError> {
         let file_path = file_path.as_ref();
         Ok(match file_path.file_name() {
@@ -103,7 +128,13 @@ impl Package {
             Some(".gemspec.yaml") => distrib::ruby::load_gemspec(file_path)?.try_into()?, // TODO
 
             #[cfg(feature = "rust")]
-            Some("Cargo.toml") => distrib::rust::load_cargo_toml(file_path)?.try_into()?,
+            Some("Cargo.toml") => {
+                let manifest = distrib::rust::load_cargo_toml(file_path)?;
+                if manifest.package.is_none() {
+                    return Err(LoadError::NoPackageFound(file_path.into()));
+                }
+                manifest.try_into()?
+            },
 
             #[cfg(feature = "gleam")]
             Some("gleam.toml") => distrib::gleam::load_package_config(file_path)?.try_into()?,
@@ -116,7 +147,11 @@ impl Package {
 
             #[cfg(feature = "python")]
             Some("pyproject.toml") => {
-                distrib::python::load_pyproject_toml(file_path)?.try_into()?
+                let manifest = distrib::python::load_pyproject_toml(file_path)?;
+                if manifest.project.is_none() {
+                    return Err(LoadError::NoPackageFound(file_path.into()));
+                }
+                manifest.try_into()?
             },
 
             _ => {

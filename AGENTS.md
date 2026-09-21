@@ -32,7 +32,7 @@ cargo build --locked --features cli
   directory: current directory affects package metadata and template selection.
   From repository root: `rust/target/debug/readmer describe` or `render`.
 - Add focused regression tests for behavior changes; integration tests belong
-  in `rust/tests/`. The current suite has only an import doctest.
+  in `rust/tests/`.
 - Check feature combinations affected by changes. Reduced-feature builds and
   strict Clippy currently have failures; distinguish these from regressions.
 - In `js/`, use Bun: `bun run build`; `bunx --no-install tsc --noEmit`.
